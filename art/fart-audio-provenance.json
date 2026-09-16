@@ -1,0 +1,32 @@
+{
+  "source": "Original procedural synthesis with deterministic seeds; no video audio copied.",
+  "reference_requested": "https://www.youtube.com/watch?v=cl0SVX78XM4",
+  "reference_access": "Web tool could not load the video; it was not listened to.",
+  "generator": "tools/build-fart-audio.py",
+  "files": [
+    {
+      "file": "fart_1.ogg",
+      "seconds": 0.48,
+      "sample_rate": 44100,
+      "channels": 1,
+      "peak": 0.7065401077270508,
+      "bytes": 8101
+    },
+    {
+      "file": "fart_2.ogg",
+      "seconds": 0.64,
+      "sample_rate": 44100,
+      "channels": 1,
+      "peak": 0.7341915369033813,
+      "bytes": 9425
+    },
+    {
+      "file": "fart_3.ogg",
+      "seconds": 0.79,
+      "sample_rate": 44100,
+      "channels": 1,
+      "peak": 0.7098088264465332,
+      "bytes": 10805
+    }
+  ]
+}

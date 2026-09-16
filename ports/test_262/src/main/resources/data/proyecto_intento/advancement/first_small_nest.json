@@ -1,0 +1,20 @@
+{
+    "parent": "proyecto_intento:find_beetle",
+    "display": {
+        "icon": {
+            "id": "proyecto_intento:popo"
+        },
+        "title": {
+            "text": "Hogar, Apestoso Hogar"
+        },
+        "description": {
+            "text": "Observa a un pelotero construir su primera casa."
+        },
+        "frame": "task"
+    },
+    "criteria": {
+        "trigger": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}

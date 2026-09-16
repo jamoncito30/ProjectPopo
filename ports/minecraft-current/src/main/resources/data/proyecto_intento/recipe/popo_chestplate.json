@@ -1,0 +1,18 @@
+{
+    "key":  {
+                "P":  {
+                          "item":  "proyecto_intento:popo"
+                      }
+            },
+    "category":  "equipment",
+    "pattern":  [
+                    "P P",
+                    "PPP",
+                    "PPP"
+                ],
+    "result":  {
+                   "id":  "proyecto_intento:popo_chestplate",
+                   "count":  1
+               },
+    "type":  "minecraft:crafting_shaped"
+}

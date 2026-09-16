@@ -1,0 +1,19 @@
+{
+    "variants":  {
+                     "stage=4":  {
+                                     "model":  "proyecto_intento:block/beetle_nest_4"
+                                 },
+                     "stage=2":  {
+                                     "model":  "proyecto_intento:block/beetle_nest_2"
+                                 },
+                     "stage=5":  {
+                                     "model":  "proyecto_intento:block/beetle_nest_5"
+                                 },
+                     "stage=3":  {
+                                     "model":  "proyecto_intento:block/beetle_nest_3"
+                                 },
+                     "stage=1":  {
+                                     "model":  "proyecto_intento:block/beetle_nest_1"
+                                 }
+                 }
+}

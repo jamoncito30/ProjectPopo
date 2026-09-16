@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_12"
+    },
+    "stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_12"
+    },
+    "stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_12"
+    },
+    "stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_12"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "proyecto_intento:block/extractor_estiercol",
+    "north": "proyecto_intento:block/extractor_estiercol",
+    "east": "proyecto_intento:block/extractor_estiercol",
+    "west": "proyecto_intento:block/extractor_estiercol",
+    "south": "proyecto_intento:block/extractor_estiercol",
+    "up": "proyecto_intento:block/dry_popo",
+    "down": "proyecto_intento:block/extractor_estiercol"
+  }
+}

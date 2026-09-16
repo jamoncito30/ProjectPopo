@@ -1,0 +1,20 @@
+{
+    "parent": "proyecto_intento:first_small_nest",
+    "display": {
+        "icon": {
+            "id": "minecraft:wheat_seeds"
+        },
+        "title": {
+            "text": "Naturaleza... eh, bella"
+        },
+        "description": {
+            "text": "Sé testigo de la reproducción de los escarabajos."
+        },
+        "frame": "task"
+    },
+    "criteria": {
+        "trigger": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}

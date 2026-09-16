@@ -1,0 +1,12 @@
+{
+    "cookingtime":  200,
+    "experience":  0.1,
+    "ingredient":  {
+                       "item":  "proyecto_intento:wet_popo"
+                   },
+    "type":  "minecraft:smelting",
+    "category":  "blocks",
+    "result":  {
+                   "id":  "proyecto_intento:dry_popo"
+               }
+}

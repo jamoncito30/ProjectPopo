@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "prompts": {
+    "wet": "Generate a Minecraft game block texture, a single seamless square tile of wet poop mud. Strict 16 by 16 pixel art grid enlarged nearest neighbor to 1024 square, only 16 cells across. Dark chocolate brown with caramel highlights, lumpy swirls and tiny moist glints, no face. Entire canvas filled with flat tile, no border no perspective no text no 3D cube. Limited 7 color palette. Opaque.",
+    "dry": "Generate a Minecraft game block texture, a single seamless square tile of dried poop adobe. Strict 16 by 16 pixel art grid enlarged nearest neighbor to 1024 square, only 16 cells across. Warm earthy ochre brown packed adobe with dark thin dry cracks and a few straw flecks, matte. Entire canvas filled with flat tile, no border no perspective no text no 3D cube. Limited 7 color palette. Opaque.",
+    "armor": "Generate one pixel art sprite atlas for Minecraft poop armor inventory icons. Square canvas transparent background, exactly 2 by 2 equally sized quadrants. Top left brown helmet, top right brown chestplate, bottom left brown leggings, bottom right brown boots pair. Each quadrant is a strict 16x16 pixel icon enlarged nearest neighbor, with 2 pixel transparent margin. Chunky vanilla Minecraft inventory icon style, brown hardened mud material with caramel edges and tiny olive stink flecks. No text, no outlines around quadrants, no scenery. Real alpha transparency."
+  },
+  "processing": "tools/build-assets.ps1: nearest-neighbor center sampling to 16x16; armor icon quadrants; generated wet material baked to vanilla 64x32 armor UV layout. Original item popo.png retained."
+}

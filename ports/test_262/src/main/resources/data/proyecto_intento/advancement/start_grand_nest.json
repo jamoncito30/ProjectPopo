@@ -1,0 +1,20 @@
+{
+    "parent": "proyecto_intento:small_town",
+    "display": {
+        "icon": {
+            "id": "proyecto_intento:beetle_nest"
+        },
+        "title": {
+            "text": "Mega Proyecto"
+        },
+        "description": {
+            "text": "Presencia el inicio de la creación del Gran Refugio."
+        },
+        "frame": "goal"
+    },
+    "criteria": {
+        "trigger": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}

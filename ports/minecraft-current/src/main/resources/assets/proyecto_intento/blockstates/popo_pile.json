@@ -1,0 +1,28 @@
+{
+    "variants":  {
+                     "amount=7":  {
+                                      "model":  "proyecto_intento:block/popo_pile_7"
+                                  },
+                     "amount=4":  {
+                                      "model":  "proyecto_intento:block/popo_pile_4"
+                                  },
+                     "amount=1":  {
+                                      "model":  "proyecto_intento:block/popo_pile_1"
+                                  },
+                     "amount=6":  {
+                                      "model":  "proyecto_intento:block/popo_pile_6"
+                                  },
+                     "amount=8":  {
+                                      "model":  "proyecto_intento:block/popo_pile_8"
+                                  },
+                     "amount=5":  {
+                                      "model":  "proyecto_intento:block/popo_pile_5"
+                                  },
+                     "amount=3":  {
+                                      "model":  "proyecto_intento:block/popo_pile_3"
+                                  },
+                     "amount=2":  {
+                                      "model":  "proyecto_intento:block/popo_pile_2"
+                                  }
+                 }
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "proyecto_intento",
+  "version": "${version}",
+  "name": "ProjectPopo",
+  "description": "A unique ecosystem mod featuring Dung Beetles that build massive colonial nests out of poop.",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/proyecto_intento/textures/item/popo.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "org.examplee.proyecto_intento.client.Proyecto_intentoDataGenerator"
+    ],
+    "client": [
+      "org.examplee.proyecto_intento.client.Proyecto_intentoClient"
+    ],
+    "main": [
+      "org.examplee.proyecto_intento.Proyecto_intento"
+    ]
+  },
+  "mixins": [
+    "proyecto_intento.mixins.json",
+    {
+      "config": "proyecto_intento.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}",
+    "java": ">=21"
+  }
+}

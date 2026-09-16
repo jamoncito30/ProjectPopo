@@ -1,0 +1,8 @@
+﻿{
+    "minecraft":  "26.3",
+    "loader":  "0.19.5",
+    "fabric_api":  "0.160.5+26.3",
+    "loom":  "1.18.1",
+    "jdk":  "25.0.4.1+1",
+    "status":  "EN DESARROLLO"
+}

@@ -1,0 +1,6 @@
+{
+    "textures":  {
+                     "layer0":  "proyecto_intento:item/popo_boots"
+                 },
+    "parent":  "minecraft:item/generated"
+}

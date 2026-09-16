@@ -1,0 +1,22 @@
+{
+    "display": {
+        "icon": {
+            "id": "proyecto_intento:dung_beetle_spawn_egg"
+        },
+        "title": {
+            "text": "¡Un nuevo residente!"
+        },
+        "description": {
+            "text": "Encuentra a un Escarabajo Pelotero."
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false
+    },
+    "criteria": {
+        "trigger": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}

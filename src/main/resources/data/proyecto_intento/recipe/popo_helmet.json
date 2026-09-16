@@ -1,0 +1,17 @@
+{
+    "key":  {
+                "P":  {
+                          "item":  "proyecto_intento:popo"
+                      }
+            },
+    "category":  "equipment",
+    "pattern":  [
+                    "PPP",
+                    "P P"
+                ],
+    "result":  {
+                   "id":  "proyecto_intento:popo_helmet",
+                   "count":  1
+               },
+    "type":  "minecraft:crafting_shaped"
+}

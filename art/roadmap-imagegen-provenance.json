@@ -1,0 +1,27 @@
+{
+  "tool": "image_gen.imagegen (integrado; sin CLI/API externa)",
+  "packaging": "tools/build-roadmap-assets.ps1: recorte por alfa y nearest-neighbor a 16x16 para iconos, resize nearest-neighbor a 16x16 para materiales y 64x64 para comerciante. Modelos JSON nativos en build-roadmap-models.py.",
+  "assets": [
+    {
+      "source": "art/source/plunger_imagegen.png",
+      "prompt": "Create a single Minecraft inventory item sprite of a toilet plunger: warm wooden handle diagonally from upper right to lower left, deep terracotta red rubber suction cup on lower left, slightly worn handcrafted look. Crisp authentic low resolution pixel art, conceptual 16x16 pixel grid enlarged nearest-neighbor, limited palette, strong dark contour, small highlights, clean readable silhouette. Single isolated object centered with 10 percent transparent margin on a genuinely transparent background. No text, no ground, no shadow outside silhouette, no border, no extra objects. This is a production raster sprite for a Minecraft mod."
+    },
+    {
+      "source": "art/source/fertilizer_imagegen.png",
+      "prompt": "Single Minecraft inventory fertilizer item sprite. A small open burlap sack holding dark brown compost granules, tiny fresh green sprout emerging from center. Authentic crisp pixel art using a conceptual 16x16 grid enlarged nearest neighbor, limited earthy palette, bold readable silhouette, light tan sack with dark ochre folds. Transparent background with generous empty margin. No text, no labels, no ground, no external shadow, no extra objects. Production game icon."
+    },
+    {
+      "source": "art/source/ceramic_imagegen.png",
+      "prompt": "Seamless square Minecraft block texture of warm ivory glazed ceramic, subtle pale blue-gray shaded pixels and sparse tiny warm gray speckles. A flat orthographic material swatch fills the entire image edge to edge. Authentic low-resolution 16x16 pixel art grid enlarged nearest neighbor, restrained small palette, mostly off-white, no 3D object, no lighting gradient, no border, no text. Production tileable ceramic texture for a Minecraft toilet model."
+    },
+    {
+      "source": "art/source/trader_imagegen.png",
+      "reference": "src/main/resources/assets/proyecto_intento/textures/entity/dung_beetle.png",
+      "prompt": "Edit this Minecraft 64x64 entity UV texture into a merchant dung beetle texture variant. Preserve the EXACT layout and relative positions of every existing texture region, eyes, legs, antennae and brown dung-ball region. Change only the shell/head chitin colors from dark bronze to saturated muted teal/jade with warm antique gold trim and tiny golden flecks. Keep the original pixel grid; this is a flat UV map, NOT a drawing of a beetle. Do not add shapes, text or 3D previews. Preserve the brown ball region at x32..52,y32..42 unchanged. Fill unused regions with the same dark jade material, suitable for a tiny backpack UV. Output a square pixel-art texture."
+    },
+    {
+      "source": "art/source/extractor_imagegen.png",
+      "prompt": "Minecraft block texture, a square front panel for an organic compost extractor built by dung beetles. Flat orthographic 16x16-style pixel art, no perspective: dark compacted brown earth panel with a thick warm bronze rim and four small square corner rivets, center has three narrow vertical dark slots like a collection grate. Limited earthy brown and antique copper palette, restrained highlights, crisp pixels. Panel fills image edge to edge, opaque, no text, no object outside the panel, no background scene. Production texture for a Minecraft block."
+    }
+  ]
+}

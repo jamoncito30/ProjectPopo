@@ -1,0 +1,9 @@
+{
+  "ambientocclusion": true,
+  "textures": {
+    "wet": "proyecto_intento:block/wet_popo",
+    "dry": "proyecto_intento:block/dry_popo",
+    "particle": "proyecto_intento:block/dry_popo"
+  },
+  "elements": []
+}

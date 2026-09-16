@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    " S ",
+    " P "
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "P": {
+      "item": "minecraft:slime_ball"
+    }
+  },
+  "result": {
+    "id": "proyecto_intento:desatascador",
+    "count": 1
+  }
+}

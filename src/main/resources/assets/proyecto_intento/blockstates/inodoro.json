@@ -1,0 +1,36 @@
+{
+  "variants": {
+    "clogged=false,facing=north": {
+      "model": "proyecto_intento:block/inodoro",
+      "y": 0
+    },
+    "clogged=false,facing=east": {
+      "model": "proyecto_intento:block/inodoro",
+      "y": 90
+    },
+    "clogged=false,facing=south": {
+      "model": "proyecto_intento:block/inodoro",
+      "y": 180
+    },
+    "clogged=false,facing=west": {
+      "model": "proyecto_intento:block/inodoro",
+      "y": 270
+    },
+    "clogged=true,facing=north": {
+      "model": "proyecto_intento:block/inodoro_clogged",
+      "y": 0
+    },
+    "clogged=true,facing=east": {
+      "model": "proyecto_intento:block/inodoro_clogged",
+      "y": 90
+    },
+    "clogged=true,facing=south": {
+      "model": "proyecto_intento:block/inodoro_clogged",
+      "y": 180
+    },
+    "clogged=true,facing=west": {
+      "model": "proyecto_intento:block/inodoro_clogged",
+      "y": 270
+    }
+  }
+}

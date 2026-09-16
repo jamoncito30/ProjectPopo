@@ -1,0 +1,27 @@
+{
+    "criteria":  {
+                     "has_ingredient":  {
+                                            "trigger":  "minecraft:inventory_changed",
+                                            "conditions":  {
+                                                               "items":  [
+                                                                             {
+                                                                                 "items":  [
+                                                                                               "proyecto_intento:popo"
+                                                                                           ]
+                                                                             }
+                                                                         ]
+                                                           }
+                                        }
+                 },
+    "parent":  "minecraft:recipes/root",
+    "rewards":  {
+                    "recipes":  [
+                                    "proyecto_intento:popo_pile"
+                                ]
+                },
+    "requirements":  [
+                         [
+                             "has_ingredient"
+                         ]
+                     ]
+}

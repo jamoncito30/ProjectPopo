@@ -1,0 +1,20 @@
+{
+    "parent": "proyecto_intento:start_grand_nest",
+    "display": {
+        "icon": {
+            "id": "minecraft:dragon_egg"
+        },
+        "title": {
+            "text": "El Gran Imperio del Popó"
+        },
+        "description": {
+            "text": "Los escarabajos han completado el Gran Refugio."
+        },
+        "frame": "challenge"
+    },
+    "criteria": {
+        "trigger": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}

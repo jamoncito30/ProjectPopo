@@ -1,0 +1,6 @@
+{
+    "textures":  {
+                     "all":  "proyecto_intento:block/wet_popo"
+                 },
+    "parent":  "minecraft:block/cube_all"
+}

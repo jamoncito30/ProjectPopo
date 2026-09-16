@@ -1,0 +1,1504 @@
+{
+  "variants": {
+    "piece=0,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_0"
+    },
+    "piece=1,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_1"
+    },
+    "piece=2,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_2"
+    },
+    "piece=3,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_3"
+    },
+    "piece=4,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_4"
+    },
+    "piece=5,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_5"
+    },
+    "piece=6,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_6"
+    },
+    "piece=7,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_7"
+    },
+    "piece=8,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_8"
+    },
+    "piece=9,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_9"
+    },
+    "piece=10,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_10"
+    },
+    "piece=11,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_11"
+    },
+    "piece=12,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_12"
+    },
+    "piece=13,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_13"
+    },
+    "piece=14,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_14"
+    },
+    "piece=15,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_15"
+    },
+    "piece=16,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_16"
+    },
+    "piece=17,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_17"
+    },
+    "piece=18,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_18"
+    },
+    "piece=19,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_19"
+    },
+    "piece=20,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_20"
+    },
+    "piece=21,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_21"
+    },
+    "piece=22,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_22"
+    },
+    "piece=23,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_23"
+    },
+    "piece=24,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_24"
+    },
+    "piece=25,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_25"
+    },
+    "piece=26,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_26"
+    },
+    "piece=27,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_27"
+    },
+    "piece=28,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_28"
+    },
+    "piece=29,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_29"
+    },
+    "piece=30,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_30"
+    },
+    "piece=31,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_31"
+    },
+    "piece=32,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_32"
+    },
+    "piece=33,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_33"
+    },
+    "piece=34,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_34"
+    },
+    "piece=35,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_35"
+    },
+    "piece=36,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_36"
+    },
+    "piece=37,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_37"
+    },
+    "piece=38,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_38"
+    },
+    "piece=39,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_39"
+    },
+    "piece=40,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_40"
+    },
+    "piece=41,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_41"
+    },
+    "piece=42,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_42"
+    },
+    "piece=43,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_43"
+    },
+    "piece=44,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_44"
+    },
+    "piece=45,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_45"
+    },
+    "piece=46,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_46"
+    },
+    "piece=47,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_47"
+    },
+    "piece=48,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_48"
+    },
+    "piece=49,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_49"
+    },
+    "piece=50,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_50"
+    },
+    "piece=51,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_51"
+    },
+    "piece=52,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_52"
+    },
+    "piece=53,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_53"
+    },
+    "piece=54,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_54"
+    },
+    "piece=55,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_55"
+    },
+    "piece=56,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_56"
+    },
+    "piece=57,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_57"
+    },
+    "piece=58,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_58"
+    },
+    "piece=59,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_59"
+    },
+    "piece=60,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_60"
+    },
+    "piece=61,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_61"
+    },
+    "piece=62,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_62"
+    },
+    "piece=63,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_63"
+    },
+    "piece=64,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_64"
+    },
+    "piece=65,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_65"
+    },
+    "piece=66,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_66"
+    },
+    "piece=67,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_67"
+    },
+    "piece=68,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_68"
+    },
+    "piece=69,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_69"
+    },
+    "piece=70,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_70"
+    },
+    "piece=71,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_71"
+    },
+    "piece=72,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_72"
+    },
+    "piece=73,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_73"
+    },
+    "piece=74,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_74"
+    },
+    "piece=75,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_75"
+    },
+    "piece=76,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_76"
+    },
+    "piece=77,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_77"
+    },
+    "piece=78,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_78"
+    },
+    "piece=79,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_79"
+    },
+    "piece=80,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_80"
+    },
+    "piece=81,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_81"
+    },
+    "piece=82,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_82"
+    },
+    "piece=83,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_83"
+    },
+    "piece=84,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_84"
+    },
+    "piece=85,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_85"
+    },
+    "piece=86,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_86"
+    },
+    "piece=87,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_87"
+    },
+    "piece=88,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_88"
+    },
+    "piece=89,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_89"
+    },
+    "piece=90,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_90"
+    },
+    "piece=91,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_91"
+    },
+    "piece=92,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_92"
+    },
+    "piece=93,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_93"
+    },
+    "piece=94,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_94"
+    },
+    "piece=95,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_95"
+    },
+    "piece=96,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_96"
+    },
+    "piece=97,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_97"
+    },
+    "piece=98,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_98"
+    },
+    "piece=99,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_99"
+    },
+    "piece=100,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_100"
+    },
+    "piece=101,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_101"
+    },
+    "piece=102,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_102"
+    },
+    "piece=103,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_103"
+    },
+    "piece=104,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_104"
+    },
+    "piece=105,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_105"
+    },
+    "piece=106,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_106"
+    },
+    "piece=107,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_107"
+    },
+    "piece=108,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_108"
+    },
+    "piece=109,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_109"
+    },
+    "piece=110,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_110"
+    },
+    "piece=111,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_111"
+    },
+    "piece=112,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_112"
+    },
+    "piece=113,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_113"
+    },
+    "piece=114,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_114"
+    },
+    "piece=115,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_115"
+    },
+    "piece=116,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_116"
+    },
+    "piece=117,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_117"
+    },
+    "piece=118,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_118"
+    },
+    "piece=119,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_119"
+    },
+    "piece=120,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_120"
+    },
+    "piece=121,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_121"
+    },
+    "piece=122,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_122"
+    },
+    "piece=123,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_123"
+    },
+    "piece=124,stage=1": {
+      "model": "proyecto_intento:block/grand_nest/stage_1/piece_124"
+    },
+    "piece=0,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_0"
+    },
+    "piece=1,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_1"
+    },
+    "piece=2,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_2"
+    },
+    "piece=3,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_3"
+    },
+    "piece=4,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_4"
+    },
+    "piece=5,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_5"
+    },
+    "piece=6,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_6"
+    },
+    "piece=7,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_7"
+    },
+    "piece=8,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_8"
+    },
+    "piece=9,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_9"
+    },
+    "piece=10,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_10"
+    },
+    "piece=11,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_11"
+    },
+    "piece=12,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_12"
+    },
+    "piece=13,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_13"
+    },
+    "piece=14,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_14"
+    },
+    "piece=15,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_15"
+    },
+    "piece=16,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_16"
+    },
+    "piece=17,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_17"
+    },
+    "piece=18,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_18"
+    },
+    "piece=19,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_19"
+    },
+    "piece=20,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_20"
+    },
+    "piece=21,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_21"
+    },
+    "piece=22,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_22"
+    },
+    "piece=23,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_23"
+    },
+    "piece=24,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_24"
+    },
+    "piece=25,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_25"
+    },
+    "piece=26,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_26"
+    },
+    "piece=27,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_27"
+    },
+    "piece=28,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_28"
+    },
+    "piece=29,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_29"
+    },
+    "piece=30,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_30"
+    },
+    "piece=31,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_31"
+    },
+    "piece=32,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_32"
+    },
+    "piece=33,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_33"
+    },
+    "piece=34,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_34"
+    },
+    "piece=35,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_35"
+    },
+    "piece=36,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_36"
+    },
+    "piece=37,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_37"
+    },
+    "piece=38,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_38"
+    },
+    "piece=39,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_39"
+    },
+    "piece=40,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_40"
+    },
+    "piece=41,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_41"
+    },
+    "piece=42,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_42"
+    },
+    "piece=43,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_43"
+    },
+    "piece=44,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_44"
+    },
+    "piece=45,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_45"
+    },
+    "piece=46,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_46"
+    },
+    "piece=47,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_47"
+    },
+    "piece=48,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_48"
+    },
+    "piece=49,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_49"
+    },
+    "piece=50,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_50"
+    },
+    "piece=51,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_51"
+    },
+    "piece=52,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_52"
+    },
+    "piece=53,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_53"
+    },
+    "piece=54,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_54"
+    },
+    "piece=55,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_55"
+    },
+    "piece=56,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_56"
+    },
+    "piece=57,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_57"
+    },
+    "piece=58,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_58"
+    },
+    "piece=59,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_59"
+    },
+    "piece=60,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_60"
+    },
+    "piece=61,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_61"
+    },
+    "piece=62,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_62"
+    },
+    "piece=63,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_63"
+    },
+    "piece=64,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_64"
+    },
+    "piece=65,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_65"
+    },
+    "piece=66,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_66"
+    },
+    "piece=67,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_67"
+    },
+    "piece=68,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_68"
+    },
+    "piece=69,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_69"
+    },
+    "piece=70,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_70"
+    },
+    "piece=71,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_71"
+    },
+    "piece=72,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_72"
+    },
+    "piece=73,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_73"
+    },
+    "piece=74,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_74"
+    },
+    "piece=75,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_75"
+    },
+    "piece=76,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_76"
+    },
+    "piece=77,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_77"
+    },
+    "piece=78,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_78"
+    },
+    "piece=79,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_79"
+    },
+    "piece=80,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_80"
+    },
+    "piece=81,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_81"
+    },
+    "piece=82,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_82"
+    },
+    "piece=83,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_83"
+    },
+    "piece=84,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_84"
+    },
+    "piece=85,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_85"
+    },
+    "piece=86,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_86"
+    },
+    "piece=87,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_87"
+    },
+    "piece=88,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_88"
+    },
+    "piece=89,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_89"
+    },
+    "piece=90,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_90"
+    },
+    "piece=91,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_91"
+    },
+    "piece=92,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_92"
+    },
+    "piece=93,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_93"
+    },
+    "piece=94,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_94"
+    },
+    "piece=95,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_95"
+    },
+    "piece=96,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_96"
+    },
+    "piece=97,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_97"
+    },
+    "piece=98,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_98"
+    },
+    "piece=99,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_99"
+    },
+    "piece=100,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_100"
+    },
+    "piece=101,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_101"
+    },
+    "piece=102,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_102"
+    },
+    "piece=103,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_103"
+    },
+    "piece=104,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_104"
+    },
+    "piece=105,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_105"
+    },
+    "piece=106,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_106"
+    },
+    "piece=107,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_107"
+    },
+    "piece=108,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_108"
+    },
+    "piece=109,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_109"
+    },
+    "piece=110,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_110"
+    },
+    "piece=111,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_111"
+    },
+    "piece=112,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_112"
+    },
+    "piece=113,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_113"
+    },
+    "piece=114,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_114"
+    },
+    "piece=115,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_115"
+    },
+    "piece=116,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_116"
+    },
+    "piece=117,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_117"
+    },
+    "piece=118,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_118"
+    },
+    "piece=119,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_119"
+    },
+    "piece=120,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_120"
+    },
+    "piece=121,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_121"
+    },
+    "piece=122,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_122"
+    },
+    "piece=123,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_123"
+    },
+    "piece=124,stage=2": {
+      "model": "proyecto_intento:block/grand_nest/stage_2/piece_124"
+    },
+    "piece=0,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_0"
+    },
+    "piece=1,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_1"
+    },
+    "piece=2,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_2"
+    },
+    "piece=3,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_3"
+    },
+    "piece=4,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_4"
+    },
+    "piece=5,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_5"
+    },
+    "piece=6,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_6"
+    },
+    "piece=7,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_7"
+    },
+    "piece=8,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_8"
+    },
+    "piece=9,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_9"
+    },
+    "piece=10,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_10"
+    },
+    "piece=11,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_11"
+    },
+    "piece=12,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_12"
+    },
+    "piece=13,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_13"
+    },
+    "piece=14,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_14"
+    },
+    "piece=15,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_15"
+    },
+    "piece=16,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_16"
+    },
+    "piece=17,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_17"
+    },
+    "piece=18,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_18"
+    },
+    "piece=19,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_19"
+    },
+    "piece=20,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_20"
+    },
+    "piece=21,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_21"
+    },
+    "piece=22,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_22"
+    },
+    "piece=23,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_23"
+    },
+    "piece=24,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_24"
+    },
+    "piece=25,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_25"
+    },
+    "piece=26,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_26"
+    },
+    "piece=27,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_27"
+    },
+    "piece=28,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_28"
+    },
+    "piece=29,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_29"
+    },
+    "piece=30,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_30"
+    },
+    "piece=31,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_31"
+    },
+    "piece=32,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_32"
+    },
+    "piece=33,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_33"
+    },
+    "piece=34,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_34"
+    },
+    "piece=35,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_35"
+    },
+    "piece=36,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_36"
+    },
+    "piece=37,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_37"
+    },
+    "piece=38,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_38"
+    },
+    "piece=39,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_39"
+    },
+    "piece=40,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_40"
+    },
+    "piece=41,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_41"
+    },
+    "piece=42,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_42"
+    },
+    "piece=43,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_43"
+    },
+    "piece=44,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_44"
+    },
+    "piece=45,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_45"
+    },
+    "piece=46,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_46"
+    },
+    "piece=47,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_47"
+    },
+    "piece=48,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_48"
+    },
+    "piece=49,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_49"
+    },
+    "piece=50,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_50"
+    },
+    "piece=51,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_51"
+    },
+    "piece=52,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_52"
+    },
+    "piece=53,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_53"
+    },
+    "piece=54,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_54"
+    },
+    "piece=55,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_55"
+    },
+    "piece=56,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_56"
+    },
+    "piece=57,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_57"
+    },
+    "piece=58,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_58"
+    },
+    "piece=59,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_59"
+    },
+    "piece=60,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_60"
+    },
+    "piece=61,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_61"
+    },
+    "piece=62,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_62"
+    },
+    "piece=63,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_63"
+    },
+    "piece=64,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_64"
+    },
+    "piece=65,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_65"
+    },
+    "piece=66,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_66"
+    },
+    "piece=67,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_67"
+    },
+    "piece=68,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_68"
+    },
+    "piece=69,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_69"
+    },
+    "piece=70,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_70"
+    },
+    "piece=71,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_71"
+    },
+    "piece=72,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_72"
+    },
+    "piece=73,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_73"
+    },
+    "piece=74,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_74"
+    },
+    "piece=75,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_75"
+    },
+    "piece=76,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_76"
+    },
+    "piece=77,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_77"
+    },
+    "piece=78,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_78"
+    },
+    "piece=79,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_79"
+    },
+    "piece=80,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_80"
+    },
+    "piece=81,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_81"
+    },
+    "piece=82,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_82"
+    },
+    "piece=83,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_83"
+    },
+    "piece=84,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_84"
+    },
+    "piece=85,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_85"
+    },
+    "piece=86,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_86"
+    },
+    "piece=87,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_87"
+    },
+    "piece=88,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_88"
+    },
+    "piece=89,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_89"
+    },
+    "piece=90,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_90"
+    },
+    "piece=91,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_91"
+    },
+    "piece=92,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_92"
+    },
+    "piece=93,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_93"
+    },
+    "piece=94,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_94"
+    },
+    "piece=95,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_95"
+    },
+    "piece=96,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_96"
+    },
+    "piece=97,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_97"
+    },
+    "piece=98,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_98"
+    },
+    "piece=99,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_99"
+    },
+    "piece=100,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_100"
+    },
+    "piece=101,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_101"
+    },
+    "piece=102,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_102"
+    },
+    "piece=103,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_103"
+    },
+    "piece=104,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_104"
+    },
+    "piece=105,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_105"
+    },
+    "piece=106,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_106"
+    },
+    "piece=107,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_107"
+    },
+    "piece=108,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_108"
+    },
+    "piece=109,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_109"
+    },
+    "piece=110,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_110"
+    },
+    "piece=111,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_111"
+    },
+    "piece=112,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_112"
+    },
+    "piece=113,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_113"
+    },
+    "piece=114,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_114"
+    },
+    "piece=115,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_115"
+    },
+    "piece=116,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_116"
+    },
+    "piece=117,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_117"
+    },
+    "piece=118,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_118"
+    },
+    "piece=119,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_119"
+    },
+    "piece=120,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_120"
+    },
+    "piece=121,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_121"
+    },
+    "piece=122,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_122"
+    },
+    "piece=123,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_123"
+    },
+    "piece=124,stage=3": {
+      "model": "proyecto_intento:block/grand_nest/stage_3/piece_124"
+    },
+    "piece=0,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_0"
+    },
+    "piece=1,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_1"
+    },
+    "piece=2,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_2"
+    },
+    "piece=3,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_3"
+    },
+    "piece=4,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_4"
+    },
+    "piece=5,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_5"
+    },
+    "piece=6,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_6"
+    },
+    "piece=7,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_7"
+    },
+    "piece=8,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_8"
+    },
+    "piece=9,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_9"
+    },
+    "piece=10,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_10"
+    },
+    "piece=11,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_11"
+    },
+    "piece=12,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_12"
+    },
+    "piece=13,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_13"
+    },
+    "piece=14,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_14"
+    },
+    "piece=15,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_15"
+    },
+    "piece=16,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_16"
+    },
+    "piece=17,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_17"
+    },
+    "piece=18,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_18"
+    },
+    "piece=19,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_19"
+    },
+    "piece=20,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_20"
+    },
+    "piece=21,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_21"
+    },
+    "piece=22,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_22"
+    },
+    "piece=23,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_23"
+    },
+    "piece=24,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_24"
+    },
+    "piece=25,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_25"
+    },
+    "piece=26,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_26"
+    },
+    "piece=27,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_27"
+    },
+    "piece=28,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_28"
+    },
+    "piece=29,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_29"
+    },
+    "piece=30,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_30"
+    },
+    "piece=31,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_31"
+    },
+    "piece=32,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_32"
+    },
+    "piece=33,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_33"
+    },
+    "piece=34,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_34"
+    },
+    "piece=35,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_35"
+    },
+    "piece=36,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_36"
+    },
+    "piece=37,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_37"
+    },
+    "piece=38,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_38"
+    },
+    "piece=39,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_39"
+    },
+    "piece=40,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_40"
+    },
+    "piece=41,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_41"
+    },
+    "piece=42,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_42"
+    },
+    "piece=43,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_43"
+    },
+    "piece=44,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_44"
+    },
+    "piece=45,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_45"
+    },
+    "piece=46,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_46"
+    },
+    "piece=47,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_47"
+    },
+    "piece=48,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_48"
+    },
+    "piece=49,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_49"
+    },
+    "piece=50,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_50"
+    },
+    "piece=51,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_51"
+    },
+    "piece=52,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_52"
+    },
+    "piece=53,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_53"
+    },
+    "piece=54,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_54"
+    },
+    "piece=55,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_55"
+    },
+    "piece=56,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_56"
+    },
+    "piece=57,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_57"
+    },
+    "piece=58,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_58"
+    },
+    "piece=59,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_59"
+    },
+    "piece=60,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_60"
+    },
+    "piece=61,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_61"
+    },
+    "piece=62,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_62"
+    },
+    "piece=63,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_63"
+    },
+    "piece=64,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_64"
+    },
+    "piece=65,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_65"
+    },
+    "piece=66,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_66"
+    },
+    "piece=67,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_67"
+    },
+    "piece=68,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_68"
+    },
+    "piece=69,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_69"
+    },
+    "piece=70,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_70"
+    },
+    "piece=71,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_71"
+    },
+    "piece=72,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_72"
+    },
+    "piece=73,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_73"
+    },
+    "piece=74,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_74"
+    },
+    "piece=75,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_75"
+    },
+    "piece=76,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_76"
+    },
+    "piece=77,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_77"
+    },
+    "piece=78,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_78"
+    },
+    "piece=79,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_79"
+    },
+    "piece=80,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_80"
+    },
+    "piece=81,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_81"
+    },
+    "piece=82,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_82"
+    },
+    "piece=83,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_83"
+    },
+    "piece=84,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_84"
+    },
+    "piece=85,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_85"
+    },
+    "piece=86,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_86"
+    },
+    "piece=87,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_87"
+    },
+    "piece=88,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_88"
+    },
+    "piece=89,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_89"
+    },
+    "piece=90,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_90"
+    },
+    "piece=91,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_91"
+    },
+    "piece=92,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_92"
+    },
+    "piece=93,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_93"
+    },
+    "piece=94,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_94"
+    },
+    "piece=95,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_95"
+    },
+    "piece=96,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_96"
+    },
+    "piece=97,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_97"
+    },
+    "piece=98,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_98"
+    },
+    "piece=99,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_99"
+    },
+    "piece=100,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_100"
+    },
+    "piece=101,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_101"
+    },
+    "piece=102,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_102"
+    },
+    "piece=103,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_103"
+    },
+    "piece=104,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_104"
+    },
+    "piece=105,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_105"
+    },
+    "piece=106,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_106"
+    },
+    "piece=107,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_107"
+    },
+    "piece=108,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_108"
+    },
+    "piece=109,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_109"
+    },
+    "piece=110,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_110"
+    },
+    "piece=111,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_111"
+    },
+    "piece=112,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_112"
+    },
+    "piece=113,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_113"
+    },
+    "piece=114,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_114"
+    },
+    "piece=115,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_115"
+    },
+    "piece=116,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_116"
+    },
+    "piece=117,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_117"
+    },
+    "piece=118,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_118"
+    },
+    "piece=119,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_119"
+    },
+    "piece=120,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_120"
+    },
+    "piece=121,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_121"
+    },
+    "piece=122,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_122"
+    },
+    "piece=123,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_123"
+    },
+    "piece=124,stage=4": {
+      "model": "proyecto_intento:block/grand_nest/stage_4/piece_124"
+    }
+  }
+}

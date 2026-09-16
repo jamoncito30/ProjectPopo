@@ -1,0 +1,59 @@
+{
+    "fart": {
+        "sounds": [
+            "proyecto_intento:fart_1",
+            "proyecto_intento:fart_2",
+            "proyecto_intento:fart_3"
+        ],
+        "subtitle": "subtitles.proyecto_intento.fart"
+    },
+    "flies": {
+        "sounds": [
+            {
+                "name": "minecraft:entity.bee.loop",
+                "volume": 0.6,
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.proyecto_intento.flies"
+    },
+    "beetle_step": {
+        "sounds": [
+            {
+                "name": "minecraft:entity.silverfish.step",
+                "volume": 0.5,
+                "type": "event"
+            }
+        ]
+    },
+    "beetle_roll": {
+        "sounds": [
+            {
+                "name": "minecraft:block.mud.step",
+                "volume": 0.6,
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.proyecto_intento.roll"
+    },
+    "beetle_chirp": {
+        "sounds": [
+            {
+                "pitch": 1.35,
+                "name": "minecraft:entity.silverfish.ambient",
+                "volume": 0.45,
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.proyecto_intento.beetle"
+    },
+    "grand_nest_start": {
+        "sounds": [
+            {
+                "name": "proyecto_intento:grand_nest_start",
+                "volume": 1.0
+            }
+        ],
+        "subtitle": "subtitles.proyecto_intento.grand_nest_start"
+    }
+}

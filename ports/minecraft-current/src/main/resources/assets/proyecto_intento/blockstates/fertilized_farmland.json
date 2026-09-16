@@ -1,0 +1,148 @@
+{
+  "variants": {
+    "charges=1,moisture=0": {
+      "model": "minecraft:block/farmland"
+    },
+    "charges=1,moisture=1": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=1,moisture=2": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=1,moisture=3": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=1,moisture=4": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=1,moisture=5": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=1,moisture=6": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=1,moisture=7": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=2,moisture=0": {
+      "model": "minecraft:block/farmland"
+    },
+    "charges=2,moisture=1": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=2,moisture=2": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=2,moisture=3": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=2,moisture=4": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=2,moisture=5": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=2,moisture=6": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=2,moisture=7": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=3,moisture=0": {
+      "model": "minecraft:block/farmland"
+    },
+    "charges=3,moisture=1": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=3,moisture=2": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=3,moisture=3": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=3,moisture=4": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=3,moisture=5": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=3,moisture=6": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=3,moisture=7": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=4,moisture=0": {
+      "model": "minecraft:block/farmland"
+    },
+    "charges=4,moisture=1": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=4,moisture=2": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=4,moisture=3": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=4,moisture=4": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=4,moisture=5": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=4,moisture=6": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=4,moisture=7": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=5,moisture=0": {
+      "model": "minecraft:block/farmland"
+    },
+    "charges=5,moisture=1": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=5,moisture=2": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=5,moisture=3": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=5,moisture=4": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=5,moisture=5": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=5,moisture=6": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=5,moisture=7": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=6,moisture=0": {
+      "model": "minecraft:block/farmland"
+    },
+    "charges=6,moisture=1": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=6,moisture=2": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=6,moisture=3": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=6,moisture=4": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=6,moisture=5": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=6,moisture=6": {
+      "model": "minecraft:block/farmland_moist"
+    },
+    "charges=6,moisture=7": {
+      "model": "minecraft:block/farmland_moist"
+    }
+  }
+}

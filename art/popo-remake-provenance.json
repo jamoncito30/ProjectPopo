@@ -1,0 +1,7 @@
+{
+  "tool": "Integrated image_gen.imagegen",
+  "source": "art/source/popo_v2.png",
+  "original_backup": "art/source/popo_original.png",
+  "packaging": "tools/build-alchemy-assets.ps1: alpha bounding box, nearest-neighbor sampling to fit 14x14 inside a transparent 16x16 canvas",
+  "prompt": "Create a polished Minecraft inventory item sprite for a poop-themed survival mod. A single small stylized brown poop mound with three irregular stacked lobes and a small curled tip, readable silhouette, no face, no eyes, no text. True very low resolution pixel art: a strict 16 by 16 pixel logical grid enlarged to fill a square canvas with nearest-neighbor hard square pixel edges; no subpixel detailing, no outlines thinner than one logical pixel, no antialiasing, no gradients. Center object with one to two logical pixels of transparent padding. Palette of 6-8 warm earthy browns, dark chocolate lower/right shadows, restrained caramel upper-left highlights, one or two muted olive flecks. The mound should have dimensional volume and broad clustered pixels like a vanilla Minecraft item, not glossy emoji or realistic feces. Transparent background with real alpha, no checkerboard drawn into image, no ground shadow. Single sprite only. Intended final downsampled asset 16x16."
+}

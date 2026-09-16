@@ -1,0 +1,20 @@
+{
+    "parent": "proyecto_intento:first_small_nest",
+    "display": {
+        "icon": {
+            "id": "proyecto_intento:beetle_nest"
+        },
+        "title": {
+            "text": "Comunidad Emergente"
+        },
+        "description": {
+            "text": "Observa cómo florece un pequeño pueblo de 4 casas."
+        },
+        "frame": "goal"
+    },
+    "criteria": {
+        "trigger": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}

@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "org.examplee.proyecto_intento.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CropBlockMixin",
+    "AnimalEntityMixin",
+    "LivingEntityMixin",
+    "MobEntityMixin",
+    "HorseFeedingMixin",
+    "WolfFeedingMixin",
+    "SlimeMoveControlAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
+
