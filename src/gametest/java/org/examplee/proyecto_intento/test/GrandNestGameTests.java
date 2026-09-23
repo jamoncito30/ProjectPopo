@@ -47,7 +47,8 @@ public final class GrandNestGameTests implements FabricGameTest {
             c.assertTrue(nest.tryEnter(beetle),"Thirty residents enter");
         }
         var extra=org.examplee.proyecto_intento.entity.ModEntities.DUNG_BEETLE.create(c.getWorld());extra.setPosition(abs.toCenterPos());
-        c.assertFalse(nest.tryEnter(extra),"Thirty-first resident refused");
+        c.getWorld().spawnEntity(extra);ids.add(extra.getUuid());
+        c.assertTrue(nest.tryEnter(extra),"Admission no longer capped at thirty residents");
         c.waitAndRun(2,()->{
             c.setBlockState(POS,Blocks.AIR);
             c.waitAndRun(2,()->{

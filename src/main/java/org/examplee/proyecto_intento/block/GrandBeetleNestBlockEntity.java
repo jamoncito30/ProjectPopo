@@ -30,7 +30,9 @@ import org.examplee.proyecto_intento.item.ModItems;
 
 public final class GrandBeetleNestBlockEntity extends BlockEntity implements SidedInventory {
     public static final int CAPACITY = 360;
+    /** Reproduction/expansion threshold only; admission is unlimited. */
     public static final int POPULATION_CAPACITY = 30;
+    public final NbtCompound invasion = new NbtCompound();
 
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(6, ItemStack.EMPTY);
     private final List<NbtCompound> occupants = new ArrayList<>();
@@ -235,10 +237,51 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
         } catch (Exception e) { throw new IllegalStateException("Cannot load blueprint", e); }
     }
 
+    public java.util.List<BlockPos> perimeter() {
+        var result=new java.util.ArrayList<BlockPos>();
+        for(int i=0;i<5;i++) {result.add(getOrigin().add(i,0,-1));result.add(getOrigin().add(i,0,5));result.add(getOrigin().add(-1,0,i));result.add(getOrigin().add(5,0,i));}
+        return result;
+    }
+    public BlockPos approach(DungBeetleEntity beetle) {
+        var points=perimeter();
+        // Stable preference spreads a crowd, while nearby alternatives remain available.
+        java.util.Collections.rotate(points,Math.floorMod(beetle.getUuid().hashCode(),points.size()));
+        return points.stream().filter(p -> world.isChunkLoaded(p) && world.getBlockState(p).getCollisionShape(world,p).isEmpty()
+                && !world.getBlockState(p.down()).getCollisionShape(world,p.down()).isEmpty())
+            .min(java.util.Comparator.comparingDouble(p -> beetle.squaredDistanceTo(p.toCenterPos()) + points.indexOf(p)*.8)).orElse(null);
+    }
+    public void navigateToPerimeter(DungBeetleEntity beetle,double speed) {
+        BlockPos target=approach(beetle);
+        if(target!=null)beetle.getNavigation().startMovingTo(target.getX()+.5,target.getY(),target.getZ()+.5,speed);
+    }
+    public boolean atPerimeter(DungBeetleEntity beetle) {
+        if(world==null || beetle.getWorld()!=world)return false;
+        var b=beetle.getBoundingBox().expand(.45,.15,.45);
+        for(BlockPos p:BlockPos.iterate(getOrigin(),getOrigin().add(4,4,4))) {
+            if(p.getX()!=getOrigin().getX() && p.getX()!=getOrigin().getX()+4 && p.getZ()!=getOrigin().getZ() && p.getZ()!=getOrigin().getZ()+4)continue;
+            var state=world.getBlockState(p);
+            if(state.isOf(ModBlocks.GRAND_BEETLE_NEST_PIECE) && state.get(GrandBeetleNestPieceBlock.PIECE)==(p.getX()-getOrigin().getX())+5*(p.getZ()-getOrigin().getZ())+25*(p.getY()-getOrigin().getY())
+                    && b.intersects(new Box(p)))return true;
+        }
+        // Legacy isolated technical controllers remain usable by explicit test/tool callers.
+        return b.intersects(new Box(pos));
+    }
+    public boolean isStructureIntact() {
+        if(world==null || !isComplete())return false;
+        if(BLUEPRINT_PIECES==null)loadBlueprint();
+        for(int p=0;p<125;p++)if(p!=12 && BLUEPRINT_PIECES[3][p]) {
+            BlockPos at=getOrigin().add(p%5,p/25,(p/5)%5);
+            if(!world.isChunkLoaded(at))return false;
+            var state=world.getBlockState(at);
+            if(!state.isOf(ModBlocks.GRAND_BEETLE_NEST_PIECE) || state.get(GrandBeetleNestPieceBlock.PIECE)!=p || state.get(GrandBeetleNestPieceBlock.STAGE)!=4)return false;
+        }
+        return true;
+    }
+
     public boolean tryEnter(DungBeetleEntity beetle) {
-        if (world == null || world.isClient || occupants.size() >= POPULATION_CAPACITY
+        if (world == null || world.isClient
                 || !beetle.isAlive() || beetle.isRemoved() || beetle.hasPassengers() || beetle.hasVehicle() || beetle.isLeashed()
-                || beetle.getCarrying() != 0 || beetle.squaredDistanceTo(pos.toCenterPos()) > 64) return false;
+                || !atPerimeter(beetle)) return false;
         
         if (occupants.stream().anyMatch(n -> n.getCompound("Entity").containsUuid("UUID")
                 && n.getCompound("Entity").getUuid("UUID").equals(beetle.getUuid()))) return false;
@@ -258,6 +301,7 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
     public static void tick(World world, BlockPos pos, BlockState state, GrandBeetleNestBlockEntity nest) {
         if (world.isClient) return;
         ServerWorld server = (ServerWorld) world;
+        if(org.examplee.proyecto_intento.entity.InvasionSystem.tickNest(server,nest)) return;
         boolean complete = nest.isComplete();
         
         for (NbtCompound occupant : nest.occupants) {
@@ -371,7 +415,7 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
         return count + occupants.size();
     }
 
-    private boolean release(ServerWorld server, NbtCompound resident, boolean emergency) {
+    public boolean release(ServerWorld server, NbtCompound resident, boolean emergency) {
         return release(server, resident, emergency, pos);
     }
     
@@ -385,15 +429,16 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
         beetle.onNestExit(exitTarget, emergency);
         if(!exitTarget.equals(pos) && server.getBlockState(exitTarget).isOf(ModBlocks.BEETLE_NEST)) beetle.setNest(exitTarget);
         
-        // Use origin's exit which is North by default
-        BlockPos exit = getOrigin().add(2, 0, -1);
-        if (emergency && !exitTarget.equals(pos)) exit = exitTarget;
-        
-        if (server.isChunkLoaded(exit)) {
-            beetle.refreshPositionAndAngles(exit.getX() + .5, exit.getY() + .05, exit.getZ() + .5, 180, 0); // Face North = 180 yaw usually
-            if (server.isSpaceEmpty(beetle) && server.spawnEntity(beetle)) {
-                markDirty();
-                return true;
+        java.util.List<BlockPos> exits=perimeter();
+        if(emergency && !exitTarget.equals(pos)) exits=java.util.List.of(exitTarget);
+        for(int i=0;i<exits.size();i++) {
+            BlockPos exit=exits.get(Math.floorMod(beetle.getUuid().hashCode()+i,exits.size()));
+            if(!server.isChunkLoaded(exit))continue;
+            beetle.refreshPositionAndAngles(exit.getX()+.5,exit.getY()+.05,exit.getZ()+.5,180,0);
+            if(server.isSpaceEmpty(beetle) && !server.getBlockState(exit.down()).getCollisionShape(server,exit.down()).isEmpty()
+                    && server.getOtherEntities(beetle,beetle.getBoundingBox()).isEmpty() && server.spawnEntity(beetle)) {
+                if(beetle.combatRole()>0)server.spawnParticles(ParticleTypes.HAPPY_VILLAGER,beetle.getX(),beetle.getY()+.5,beetle.getZ(),8,.3,.2,.3,.02);
+                markDirty();return true;
             }
         }
         if (emergency) {
@@ -406,6 +451,7 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
     @Override public int size() { return items.size(); }
     public void evacuateAndDismantle() {
         if(!(world instanceof ServerWorld server)) return;
+        org.examplee.proyecto_intento.entity.InvasionSystem.finish(server,this,false);
         occupants.removeIf(resident -> release(server,resident,true)
                 || (resident.getCompound("Entity").containsUuid("UUID") && server.getEntity(resident.getCompound("Entity").getUuid("UUID"))!=null));
         updateStructure(0);
@@ -440,6 +486,7 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
     
     @Override protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
         super.writeNbt(nbt, registries);
+        nbt.put("InvasionEvent", invasion.copy());
         Inventories.writeNbt(nbt, items, registries);
         nbt.putInt("AmountInvested", amountInvested);
         nbt.putBoolean("SoundPlayed", soundPlayed);
@@ -455,6 +502,8 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
     
     @Override protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
         super.readNbt(nbt, registries);
+        for(String key: new java.util.HashSet<>(invasion.getKeys())) invasion.remove(key);
+        invasion.copyFrom(nbt.getCompound("InvasionEvent"));
         items.clear();
         Inventories.readNbt(nbt, items, registries);
         for (int i = 0; i < size(); i++) {
@@ -469,6 +518,6 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
         }
         occupants.clear();
         NbtList list = nbt.getList("Occupants", NbtElement.COMPOUND_TYPE);
-        for (int i = 0; i < Math.min(POPULATION_CAPACITY, list.size()); i++) occupants.add(list.getCompound(i).copy());
+        for (int i = 0; i < list.size(); i++) occupants.add(list.getCompound(i).copy());
     }
 }

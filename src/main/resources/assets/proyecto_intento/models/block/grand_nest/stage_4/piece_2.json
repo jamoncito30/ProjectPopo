@@ -3,6 +3,7 @@
   "textures": {
     "wet": "proyecto_intento:block/wet_popo",
     "dry": "proyecto_intento:block/dry_popo",
+    "entrance": "minecraft:block/black_concrete",
     "particle": "proyecto_intento:block/dry_popo"
   },
   "elements": [
@@ -67,6 +68,38 @@
         },
         "down": {
           "texture": "#dry"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        6,
+        4
+      ],
+      "to": [
+        16,
+        16,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#entrance"
+        },
+        "south": {
+          "texture": "#entrance"
+        },
+        "east": {
+          "texture": "#entrance"
+        },
+        "west": {
+          "texture": "#entrance"
+        },
+        "up": {
+          "texture": "#entrance"
+        },
+        "down": {
+          "texture": "#entrance"
         }
       }
     }

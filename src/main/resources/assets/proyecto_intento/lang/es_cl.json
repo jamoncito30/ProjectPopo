@@ -26,5 +26,16 @@
   "item.proyecto_intento.estiercol": "Estiércol",
   "block.proyecto_intento.extractor_estiercol": "Extractor de estiércol",
   "block.proyecto_intento.fertilized_farmland": "Tierra de cultivo fertilizada",
-  "entity.proyecto_intento.toilet_seat": "Asiento de inodoro"
+  "entity.proyecto_intento.toilet_seat": "Asiento de inodoro",
+  "entity.proyecto_intento.fetid_slime": "Slime fétido",
+  "item.proyecto_intento.fetid_slime_spawn_egg": "Huevo de slime fétido",
+  "item.proyecto_intento.viscous_biomass": "Biomasa viscosa",
+  "item.proyecto_intento.toxic_plunger": "Desatascador tóxico",
+  "item.proyecto_intento.sewage_bucket": "Cubo de aguas residuales",
+  "block.proyecto_intento.sewage": "Aguas residuales",
+  "block.proyecto_intento.pestilent_torch": "Antorcha pestilente",
+  "item.minecraft.potion.effect.pestilence": "Poción de pestilencia",
+  "item.minecraft.splash_potion.effect.pestilence": "Poción arrojadiza de pestilencia",
+  "item.minecraft.lingering_potion.effect.pestilence": "Poción persistente de pestilencia",
+  "item.minecraft.tipped_arrow.effect.pestilence": "Flecha de pestilencia"
 }

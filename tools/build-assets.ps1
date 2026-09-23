@@ -6,3 +6,5 @@ $ErrorActionPreference = 'Stop'
 python (Join-Path $PSScriptRoot 'build-grand-nest-assets.py')
 if ($LASTEXITCODE -ne 0) { throw 'Grand nest asset generation failed' }
 & (Join-Path $PSScriptRoot 'build-roadmap-assets.ps1')
+& (Join-Path $PSScriptRoot 'build-fetid-assets.ps1')
+& (Join-Path $PSScriptRoot 'build-invasion-assets.ps1')

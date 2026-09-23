@@ -41,6 +41,11 @@ public abstract class MobEntityMixin extends LivingEntity {
     @Inject(method = "tickNewAi", at = @At("HEAD"), cancellable = true)
     private void popocraft$fleeSmell(CallbackInfo ci) {
         MobEntity mob = (MobEntity) (Object) this;
+        if(org.examplee.proyecto_intento.entity.InvasionSystem.tickFighter(mob)) {
+            goalSelector.getGoals().stream().filter(PrioritizedGoal::isRunning).forEach(PrioritizedGoal::stop);
+            targetSelector.getGoals().stream().filter(PrioritizedGoal::isRunning).forEach(PrioritizedGoal::stop);
+            ci.cancel();return;
+        }
         // Bosses have encounter-specific movement. Preserve those fights.
         if (mob instanceof EnderDragonEntity || mob instanceof WitherEntity || mob.isAiDisabled()) return;
         if (--popocraft$searchTicks <= 0) {

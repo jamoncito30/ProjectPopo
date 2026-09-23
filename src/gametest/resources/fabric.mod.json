@@ -5,7 +5,18 @@
   "name": "PopoCraft integration tests",
   "environment": "server",
   "entrypoints": {
-    "fabric-gametest": ["org.examplee.proyecto_intento.test.PopoCraftGameTests", "org.examplee.proyecto_intento.test.PopoExpansionGameTests", "org.examplee.proyecto_intento.test.BeetleNestGameTests", "org.examplee.proyecto_intento.test.AlchemyGameTests", "org.examplee.proyecto_intento.test.GrandNestGameTests", "org.examplee.proyecto_intento.test.RoadmapGameTests"]
+    "fabric-gametest": [
+      "org.examplee.proyecto_intento.test.PopoCraftGameTests",
+      "org.examplee.proyecto_intento.test.PopoExpansionGameTests",
+      "org.examplee.proyecto_intento.test.BeetleNestGameTests",
+      "org.examplee.proyecto_intento.test.AlchemyGameTests",
+      "org.examplee.proyecto_intento.test.GrandNestGameTests",
+      "org.examplee.proyecto_intento.test.RoadmapGameTests",
+      "org.examplee.proyecto_intento.test.FetidGameTests",
+      "org.examplee.proyecto_intento.test.InvasionGameTests"
+    ]
   },
-  "depends": {"proyecto_intento": "*"}
+  "depends": {
+    "proyecto_intento": "*"
+  }
 }

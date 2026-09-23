@@ -67,6 +67,25 @@ public class ModCommands {
                     return 1;
                 })
             );
+
+            dispatcher.register(CommandManager.literal("spawn_trader_beetle")
+                .requires(source -> source.hasPermissionLevel(2))
+                .executes(context -> {
+                    ServerCommandSource source = context.getSource();
+                    ServerPlayerEntity player = source.getPlayer();
+                    if (player == null) return 0;
+                    ServerWorld world = player.getServerWorld();
+                    DungBeetleEntity beetle = ModEntities.DUNG_BEETLE.create(world);
+                    if (beetle != null) {
+                        beetle.refreshPositionAndAngles(player.getX(), player.getY(), player.getZ(), player.getYaw(), 0);
+                        beetle.setTrader(true);
+                        world.spawnEntity(beetle);
+                        source.sendMessage(Text.literal("Escarabajo Comerciante invocado con exito!"));
+                    }
+                    return 1;
+                })
+            );
         });
     }
 }
+

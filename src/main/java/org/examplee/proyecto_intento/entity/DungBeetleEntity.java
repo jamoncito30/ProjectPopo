@@ -2,6 +2,14 @@ package org.examplee.proyecto_intento.entity;
 
 import java.util.Comparator;
 import java.util.EnumSet;
+import net.minecraft.village.Merchant;
+import net.minecraft.village.TradeOfferList;
+import net.minecraft.village.TradeOffer;
+import net.minecraft.village.TradedItem;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
@@ -40,7 +48,12 @@ import org.examplee.proyecto_intento.block.GrandBeetleNestPieceBlock;
 import net.minecraft.block.Blocks;
 
 
-public final class DungBeetleEntity extends AnimalEntity {
+public final class DungBeetleEntity extends AnimalEntity implements Merchant, InvasionParticipant {
+    private final CombatState combatState = new CombatState();
+    private static final TrackedData<Integer> COMBAT_ROLE = DataTracker.registerData(DungBeetleEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    public CombatState combat(){return combatState;}
+    public int combatRole(){return dataTracker.get(COMBAT_ROLE);}
+    public void combatRole(int role){dataTracker.set(COMBAT_ROLE,role);}
     private static final TrackedData<Integer> CARRYING = DataTracker.registerData(DungBeetleEntity.class, TrackedDataHandlerRegistry.INTEGER);
     private static final TrackedData<Boolean> TRADER = DataTracker.registerData(DungBeetleEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private boolean hasDroppedShell;
@@ -49,12 +62,17 @@ public final class DungBeetleEntity extends AnimalEntity {
     private int outsideTicks;
     private boolean nurseryResident;
 
+    @Nullable
+    private PlayerEntity customer;
+    @Nullable
+    private TradeOfferList offers;
+
     public DungBeetleEntity(EntityType<? extends AnimalEntity> type, World world) { super(type, world); }
     public static DefaultAttributeContainer.Builder createAttributes() {
         return AnimalEntity.createMobAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 8)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.22).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16);
     }
-    @Override protected void initDataTracker(DataTracker.Builder builder) { super.initDataTracker(builder); builder.add(CARRYING, 0); builder.add(TRADER,false); }
+    @Override protected void initDataTracker(DataTracker.Builder builder) { super.initDataTracker(builder); builder.add(CARRYING, 0); builder.add(TRADER,false); builder.add(COMBAT_ROLE,0); }
     public boolean isTrader() { return dataTracker.get(TRADER); }
     public void setTrader(boolean value) { dataTracker.set(TRADER,value); }
     public int getCarrying() { return dataTracker.get(CARRYING); }
@@ -83,6 +101,7 @@ public final class DungBeetleEntity extends AnimalEntity {
     }
     @Override public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
+        combatState.write(nbt,combatRole());
         nbt.putBoolean("IsTrader", isTrader());
         nbt.putBoolean("HasDroppedShell", hasDroppedShell);
         nbt.putInt("CarriedPopo", getCarrying());
@@ -93,6 +112,7 @@ public final class DungBeetleEntity extends AnimalEntity {
     }
     @Override public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
+        combatRole(combatState.read(nbt));
         setTrader(nbt.getBoolean("IsTrader"));
         hasDroppedShell=nbt.getBoolean("HasDroppedShell");
         
@@ -122,7 +142,7 @@ public final class DungBeetleEntity extends AnimalEntity {
     @Override public void tickMovement() {
         super.tickMovement();
         if (!getWorld().isClient && outsideTicks > 0) outsideTicks--;
-        if (!getWorld().isClient && (getWorld().getTime()+getId()) % 200 == 0) {
+        if (!getWorld().isClient && combatState.event == null && (getWorld().getTime()+getId()) % 200 == 0) {
             org.examplee.proyecto_intento.entity.AdvancementHelper.grantNearby((ServerWorld)getWorld(), getBlockPos(), "find_beetle");
             tryInitiateGrandNest();
         }
@@ -178,14 +198,15 @@ public final class DungBeetleEntity extends AnimalEntity {
         if (nurseryResident && !isBaby()) { nestPos = null; nurseryResident = false; }
         if(nestPos!=null && getWorld().isChunkLoaded(nestPos)
                 && getWorld().getBlockEntity(nestPos) instanceof GrandBeetleNestBlockEntity existing
-                && existing.getOccupantCount()<GrandBeetleNestBlockEntity.POPULATION_CAPACITY) return existing;
+                ) return existing;
         
         // Search for grand nest first EVERY TIME (forces migration)
         for (BlockPos candidate : BlockPos.iterate(home.add(-24, -4, -24), home.add(24, 4, 24))) {
             if (getWorld().isChunkLoaded(candidate)) {
                 if (getWorld().getBlockEntity(candidate) instanceof GrandBeetleNestBlockEntity grandNest
-                        && grandNest.getOccupantCount() < GrandBeetleNestBlockEntity.POPULATION_CAPACITY) {
-                    Path path = getNavigation().findPathTo(candidate, 1);
+                        ) {
+                    BlockPos approach = grandNest.approach(this);
+                    Path path = approach == null ? null : getNavigation().findPathTo(approach, 0);
                     if (path != null && path.reachesTarget()) { setNest(candidate); return grandNest; }
                 }
             }
@@ -257,8 +278,7 @@ public final class DungBeetleEntity extends AnimalEntity {
             Object nest = findHome();
             
             if (nest instanceof GrandBeetleNestBlockEntity grandNest) {
-                return grandNest.getOccupantCount() < GrandBeetleNestBlockEntity.POPULATION_CAPACITY
-                    && (wantsToSleep || outsideTicks == 0 || (!isBaby() && getBreedingAge() == 0 && grandNest.getFoodCount() > 0));
+                return (wantsToSleep || outsideTicks == 0 || (!isBaby() && getBreedingAge() == 0 && grandNest.getFoodCount() > 0));
             } else if (nest instanceof BeetleNestBlockEntity smallNest) {
                 return smallNest.isComplete() && smallNest.getOccupantCount() < BeetleNestBlockEntity.CAPACITY
                     && (wantsToSleep || outsideTicks == 0 || (!isBaby() && getBreedingAge() == 0 && smallNest.getFood() > 0));
@@ -271,8 +291,8 @@ public final class DungBeetleEntity extends AnimalEntity {
             travelTicks++;
             var be = getWorld().getBlockEntity(nestPos);
             if (be instanceof GrandBeetleNestBlockEntity grandNest) {
-                if (!getNavigation().isFollowingPath()) getNavigation().startMovingTo(nestPos.getX() + .5, nestPos.getY(), nestPos.getZ() + .5, .9);
-                if (squaredDistanceTo(nestPos.toCenterPos()) < 24 && canSeeNest(nestPos)) {
+                if (travelTicks % 20 == 1) grandNest.navigateToPerimeter(DungBeetleEntity.this, 1.1);
+                if (grandNest.atPerimeter(DungBeetleEntity.this)) {
                     grandNest.tryEnter(DungBeetleEntity.this);
                     travelTicks = 240;
                 }
@@ -437,6 +457,100 @@ private final class CollectGoal extends Goal {
             }
         }
         @Override public void stop() { getNavigation().stop(); target = null; deposit = null; sourceNest = null; cooldown = 20; }
+    }
+
+    @Override
+    public ActionResult interactMob(PlayerEntity player, Hand hand) {
+        ItemStack itemStack = player.getStackInHand(hand);
+        
+        if (itemStack.isOf(Items.NAME_TAG) || this.isBreedingItem(itemStack)) {
+            ActionResult result = super.interactMob(player, hand);
+            if (result.isAccepted()) return result;
+            if (this.isBreedingItem(itemStack)) return result;
+        }
+        
+        if (combatState.event != null) return ActionResult.FAIL;
+        if (this.isTrader() && this.isAlive() && !this.hasCustomer() && !this.isBaby()) {
+            if (!this.getOffers().isEmpty()) {
+                if (!this.getWorld().isClient) {
+                    this.setCustomer(player);
+                    this.sendOffers(player, this.getDisplayName(), 1);
+                }
+                return ActionResult.success(this.getWorld().isClient);
+            }
+        }
+        
+        return super.interactMob(player, hand);
+    }
+    
+    public boolean hasCustomer() {
+        return this.customer != null;
+    }
+
+    @Override
+    public void setCustomer(@Nullable PlayerEntity customer) {
+        this.customer = customer;
+    }
+
+    @Override
+    @Nullable
+    public PlayerEntity getCustomer() {
+        return this.customer;
+    }
+
+    @Override
+    public TradeOfferList getOffers() {
+        if (this.offers == null) {
+            this.offers = new TradeOfferList();
+            this.offers.add(new TradeOffer(new TradedItem(Items.EMERALD, 1), new ItemStack(ModItems.POPO, 4), 10, 5, 0.05f));
+            this.offers.add(new TradeOffer(new TradedItem(ModItems.POPO, 10), new ItemStack(Items.EMERALD, 1), 10, 5, 0.05f));
+            this.offers.add(new TradeOffer(new TradedItem(Items.EMERALD, 3), new ItemStack(ModItems.ESTIERCOL, 1), 10, 5, 0.05f));
+        }
+        return this.offers;
+    }
+
+    @Override
+    public void setOffersFromServer(@Nullable TradeOfferList offers) {
+        this.offers = offers;
+    }
+
+    @Override
+    public void trade(TradeOffer offer) {
+        offer.use();
+        this.ambientSoundChance = -this.getMinAmbientSoundDelay();
+        this.onSellingItem(offer.getSellItem());
+    }
+
+    @Override
+    public void onSellingItem(ItemStack stack) {
+        if (!this.getWorld().isClient && this.ambientSoundChance > -this.getMinAmbientSoundDelay() + 20) {
+            this.ambientSoundChance = -this.getMinAmbientSoundDelay();
+            this.playSound(this.getYesSound(), this.getSoundVolume(), this.getSoundPitch());
+        }
+    }
+
+    @Override
+    public int getExperience() {
+        return 0;
+    }
+
+    @Override
+    public void setExperienceFromServer(int experience) {
+    }
+
+    @Override
+    public boolean isLeveledMerchant() {
+        return false;
+    }
+
+    @Override
+    public SoundEvent getYesSound() {
+        return ModSounds.BEETLE_CHIRP;
+    }
+
+    @Override
+    public boolean isClient() {
+        return this.getWorld().isClient;
     }
 
     @Override

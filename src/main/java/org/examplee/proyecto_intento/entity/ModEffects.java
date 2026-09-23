@@ -13,6 +13,12 @@ public final class ModEffects {
     private static final class StinkyEffect extends StatusEffect {
         private StinkyEffect() { super(StatusEffectCategory.HARMFUL, 0x66512B); }
     }
+        public static final RegistryEntry<StatusEffect> FETID_OMEN = Registry.registerReference(Registries.STATUS_EFFECT,
+            Identifier.of("proyecto_intento", "fetid_omen"), new FetidOmenEffect());
+    private static final class FetidOmenEffect extends StatusEffect {
+        private FetidOmenEffect() { super(StatusEffectCategory.HARMFUL, 0x4B6E2C); }
+    }
     public static void initialize() { }
     private ModEffects() { }
 }
+

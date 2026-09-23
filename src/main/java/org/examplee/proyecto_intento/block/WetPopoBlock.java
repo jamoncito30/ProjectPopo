@@ -27,6 +27,7 @@ public final class WetPopoBlock extends Block {
 
     @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        if(context instanceof net.minecraft.block.EntityShapeContext e && e.getEntity() instanceof org.examplee.proyecto_intento.entity.DungBeetleEntity)return VoxelShapes.fullCube();
         return VoxelShapes.empty();
     }
 

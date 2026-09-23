@@ -17,7 +17,14 @@ import org.examplee.proyecto_intento.entity.ToiletSeatEntity;
 import org.examplee.proyecto_intento.item.ModItems;
 import org.examplee.proyecto_intento.item.PlungerItem;
 
-public final class ToiletBlock extends Block {
+public final class ToiletBlock extends BlockWithEntity {
+    public static final com.mojang.serialization.MapCodec<ToiletBlock> CODEC = createCodec(ToiletBlock::new);
+    @Override protected com.mojang.serialization.MapCodec<ToiletBlock> getCodec() { return CODEC; }
+    @Override protected BlockRenderType getRenderType(BlockState state) { return BlockRenderType.MODEL; }
+    @Override public net.minecraft.block.entity.BlockEntity createBlockEntity(BlockPos pos,BlockState state) { return new ToiletBlockEntity(pos,state); }
+    @Override public <T extends net.minecraft.block.entity.BlockEntity> net.minecraft.block.entity.BlockEntityTicker<T> getTicker(World world,BlockState state,net.minecraft.block.entity.BlockEntityType<T> type) {
+        return world.isClient ? null : validateTicker(type,ModBlocks.TOILET_ENTITY,ToiletBlockEntity::tick);
+    }
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final BooleanProperty CLOGGED = BooleanProperty.of("clogged");
     public ToiletBlock(Settings settings) { super(settings); setDefaultState(getStateManager().getDefaultState().with(FACING,Direction.NORTH).with(CLOGGED,false)); }
@@ -41,13 +48,14 @@ public final class ToiletBlock extends Block {
         return ToiletSeatEntity.sit(w,p,player) ? ActionResult.CONSUME : ActionResult.FAIL;
     }
     @Override protected ItemActionResult onUseWithItem(ItemStack stack,BlockState s,World w,BlockPos p,PlayerEntity player,Hand hand,BlockHitResult hit) {
-        if (stack.isOf(ModItems.DESATASCADOR)) {
+        if (stack.isOf(ModItems.DESATASCADOR) || stack.isOf(ModItems.TOXIC_PLUNGER)) {
             PlungerItem.unclog(w,p,player,hand);
             return ItemActionResult.SUCCESS;
         }
         return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
     @Override protected void onStateReplaced(BlockState s,World w,BlockPos p,BlockState next,boolean moved) {
+        if (s.isOf(next.getBlock()) && s.get(CLOGGED)!=next.get(CLOGGED) && w.getBlockEntity(p) instanceof ToiletBlockEntity toilet) toilet.resetInfestation();
         if (!s.isOf(next.getBlock()) && !w.isClient) {
             for(var seat:w.getEntitiesByClass(ToiletSeatEntity.class,new Box(p),e->e.getBlockPos().equals(p))) { seat.removeAllPassengers(); seat.discard(); }
         }

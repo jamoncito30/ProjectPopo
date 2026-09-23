@@ -26,5 +26,18 @@
   "item.proyecto_intento.estiercol": "Fertilizer",
   "block.proyecto_intento.extractor_estiercol": "Fertilizer Extractor",
   "block.proyecto_intento.fertilized_farmland": "Fertilized Farmland",
-  "entity.proyecto_intento.toilet_seat": "Toilet Seat"
+  "entity.proyecto_intento.toilet_seat": "Toilet Seat",
+  "entity.proyecto_intento.fetid_slime": "Fetid Slime",
+  "item.proyecto_intento.fetid_slime_spawn_egg": "Fetid Slime Spawn Egg",
+  "item.proyecto_intento.viscous_biomass": "Viscous Biomass",
+  "item.proyecto_intento.toxic_plunger": "Toxic Plunger",
+  "item.proyecto_intento.sewage_bucket": "Sewage Bucket",
+  "block.proyecto_intento.sewage": "Sewage",
+  "block.proyecto_intento.pestilent_torch": "Pestilent Torch",
+  "item.minecraft.potion.effect.pestilence": "Potion of Pestilence",
+  "item.minecraft.splash_potion.effect.pestilence": "Splash Potion of Pestilence",
+  "item.minecraft.lingering_potion.effect.pestilence": "Lingering Potion of Pestilence",
+  "item.minecraft.tipped_arrow.effect.pestilence": "Arrow of Pestilence",
+  "category.proyecto_intento.keys": "PopoCraft",
+  "key.proyecto_intento.poop": "Poop"
 }

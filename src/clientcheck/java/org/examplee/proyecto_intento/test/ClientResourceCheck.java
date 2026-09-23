@@ -77,7 +77,35 @@ public final class ClientResourceCheck implements ClientModInitializer {
                     }
                 }
                 Files.writeString(client.runDirectory.toPath().resolve("roadmap-check.txt"),"PASS: toilet 8 states, extractor, 48 farmland states, 3 item models, 5 decoded textures and merchant backpack.\n");
-                client.setScreen(new RoadmapPreviewScreen());
+                for(String id:new String[]{"viscous_biomass","toxic_plunger","sewage_bucket","pestilent_torch","fetid_slime_spawn_egg"}) {
+                    var stack=new ItemStack(Registries.ITEM.get(Identifier.of("proyecto_intento",id)));
+                    if(stack.isEmpty() || client.getItemRenderer().getModels().getModel(stack)==client.getBakedModelManager().getMissingModel())throw new IllegalStateException("Missing fetid item: "+id);
+                }
+                for(var block:new net.minecraft.block.Block[]{org.examplee.proyecto_intento.block.ModBlocks.SEWAGE,org.examplee.proyecto_intento.block.ModBlocks.PESTILENT_TORCH}) {
+                    if(client.getBlockRenderManager().getModel(block.getDefaultState())==client.getBakedModelManager().getMissingModel())throw new IllegalStateException("Missing fetid block");
+                }
+                for(String texture:new String[]{"entity/fetid_slime","item/viscous_biomass","item/pestilence","item/toxic_plunger","block/sewage","block/pestilent_torch"}) {
+                    try(var input=client.getResourceManager().open(Identifier.of("proyecto_intento","textures/"+texture+".png"));var pixels=net.minecraft.client.texture.NativeImage.read(input)) {
+                        if(pixels.getWidth()!=(texture.startsWith("entity/")?64:16))throw new IllegalStateException("Wrong fetid texture size: "+texture);
+                    }
+                }
+                client.getEntityModelLoader().getModelPart(org.examplee.proyecto_intento.client.FetidSlimeRenderer.LAYER).getChild("body").getChild("face");
+                var pestilence=net.minecraft.component.type.PotionContentsComponent.createStack(net.minecraft.item.Items.POTION,org.examplee.proyecto_intento.item.ModPotions.PESTILENCE);
+                var custom=client.getBakedModelManager().getModel(Identifier.of("proyecto_intento","item/pestilence"));
+                if(custom==client.getBakedModelManager().getMissingModel() || client.getItemRenderer().getModel(pestilence,null,null,0)!=custom)throw new IllegalStateException("Custom pestilence model not selected");
+                Files.writeString(client.runDirectory.toPath().resolve("fetid-check.txt"),"PASS: 5 items, 2 blocks, 6 decoded textures, slime geometry and custom potion model selection.\n");
+                for(String name:new String[]{"beetle_soldier","beetle_artillery","slime_runner","slime_artillery","slime_colossus","dung_shot","acid_spit"}) {
+                    boolean item=name.equals("dung_shot") || name.equals("acid_spit");
+                    try(var input=client.getResourceManager().open(Identifier.of("proyecto_intento","textures/"+(item?"item":"entity")+"/invasion/"+name+".png"));var pixels=net.minecraft.client.texture.NativeImage.read(input)) {
+                        if(pixels.getWidth()!=(item?16:64) || pixels.getHeight()!=pixels.getWidth()) throw new IllegalStateException("Wrong invasion texture dimensions: "+name);
+                        if(!item) for(int y=0;y<64;y++)for(int x=0;x<64;x++)if(pixels.getOpacity(x,y)!=-1) throw new IllegalStateException("Transparent body texture: "+name);
+                    }
+                }
+                org.examplee.proyecto_intento.client.InvasionModels.beetle(false).getChild("head").getChild("helmet");
+                org.examplee.proyecto_intento.client.InvasionModels.beetle(true).getChild("ammo_basket");
+                for(int role=0;role<3;role++)org.examplee.proyecto_intento.client.InvasionModels.slime(role).getChild("body").getChild("face");
+                Files.writeString(client.runDirectory.toPath().resolve("invasion-check.txt"),"PASS: seven textures decoded, square dimensions and body opacity verified, five model factories loaded. Event not implemented by this art check.\n");
+                client.setScreen(new InvasionPreviewScreen());
             } catch (Exception exception) {
                 throw new IllegalStateException("PopoCraft client resource check failed", exception);
             }

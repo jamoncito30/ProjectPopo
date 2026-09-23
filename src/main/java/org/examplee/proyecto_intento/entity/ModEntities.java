@@ -15,6 +15,13 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.BiomeKeys;
 
 public final class ModEntities {
+    public static final EntityType<InvasionProjectileEntity> INVASION_PROJECTILE=Registry.register(Registries.ENTITY_TYPE,Identifier.of("proyecto_intento","invasion_projectile"),EntityType.Builder.<InvasionProjectileEntity>create(InvasionProjectileEntity::new,SpawnGroup.MISC).dimensions(.25F,.25F).maxTrackingRange(8).trackingTickInterval(2).build("proyecto_intento:invasion_projectile"));
+    public static final EntityType<FetidSlimeEntity> FETID_SLIME = Registry.register(Registries.ENTITY_TYPE,
+            Identifier.of("proyecto_intento","fetid_slime"),EntityType.Builder.create(FetidSlimeEntity::new,SpawnGroup.MONSTER)
+                    .dimensions(.52F,.52F).maxTrackingRange(8).build("proyecto_intento:fetid_slime"));
+        public static final EntityType<FetidSlimeAlphaEntity> FETID_SLIME_ALPHA = Registry.register(Registries.ENTITY_TYPE,
+            Identifier.of("proyecto_intento","fetid_slime_alpha"),EntityType.Builder.create(FetidSlimeAlphaEntity::new,SpawnGroup.MONSTER)
+                    .dimensions(2.08F,2.08F).maxTrackingRange(10).build("proyecto_intento:fetid_slime_alpha"));
     public static final EntityType<ToiletSeatEntity> TOILET_SEAT = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of("proyecto_intento","toilet_seat"),EntityType.Builder.<ToiletSeatEntity>create(ToiletSeatEntity::new,SpawnGroup.MISC).dimensions(.1F,.1F).disableSaving().disableSummon().maxTrackingRange(4).build("proyecto_intento:toilet_seat"));
     public static final EntityType<PopoProjectileEntity> POPO_PROJECTILE = Registry.register(Registries.ENTITY_TYPE,
@@ -24,6 +31,8 @@ public final class ModEntities {
             Identifier.of("proyecto_intento", "dung_beetle"), EntityType.Builder.create(DungBeetleEntity::new, SpawnGroup.CREATURE)
                     .dimensions(0.65F, 0.4F).maxTrackingRange(8).build("proyecto_intento:dung_beetle"));
     public static void initialize() {
+        FabricDefaultAttributeRegistry.register(FETID_SLIME,FetidSlimeEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(FETID_SLIME_ALPHA, FetidSlimeAlphaEntity.createFetidSlimeAlphaAttributes());
         FabricDefaultAttributeRegistry.register(DUNG_BEETLE, DungBeetleEntity.createAttributes());
         SpawnRestriction.register(DUNG_BEETLE, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 (type, world, reason, pos, random) -> {
@@ -41,3 +50,4 @@ public final class ModEntities {
     }
     private ModEntities() { }
 }
+

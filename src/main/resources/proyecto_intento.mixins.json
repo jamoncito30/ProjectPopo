@@ -4,13 +4,17 @@
   "package": "org.examplee.proyecto_intento.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "TorchMovementMixin",
     "CropBlockMixin",
     "AnimalEntityMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
     "HorseFeedingMixin",
     "WolfFeedingMixin",
-    "SlimeMoveControlAccessor"
+    "SlimeMoveControlAccessor",
+    "PlayerEntityMixin",
+    "InvasionProtectionMixin",
+    "InvasionTerrainMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -19,4 +23,3 @@
     "requireAnnotations": true
   }
 }
-

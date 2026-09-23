@@ -34,6 +34,9 @@ public class Proyecto_intento implements ModInitializer {
         ModSounds.initialize();
         ModItemGroups.initialize();
         SmellSystem.initialize();
+        org.examplee.proyecto_intento.entity.InvasionSystem.initialize();
+        org.examplee.proyecto_intento.entity.DigestionSystem.initialize();
+        org.examplee.proyecto_intento.network.ModNetworking.register();
         ModCommands.register();
     }
 }

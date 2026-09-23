@@ -47,12 +47,16 @@ def design(stage):
         for x,z in [(4,16),(68,16),(4,52),(68,52)]:
             box(x,4,z,x+8,20,z+12,'dry')
     if stage == 4:
+        # Closed exterior: entry is a symbolic dark inset, not an open corridor.
+        box(28,6,4,52,24,12,'entrance')
+        box(32,24,4,48,28,12,'entrance')
         box(24,64,24,56,68,56,'dry')
         box(28,68,28,52,72,52)
         # Crown ventilation opening, deliberately hollow.
         box(32,72,32,36,78,48,'dry'); box(44,72,32,48,78,48,'dry')
         box(36,72,32,44,78,36,'dry'); box(36,72,44,44,78,48,'dry')
         box(30,78,30,50,80,50)
+        box(36,72,36,44,78,44,'dry')
     return boxes
 
 variants, geometry, stages = {}, [], []
@@ -74,7 +78,7 @@ for stage in range(1,5):
         elements = []
         for a,b,texture in boxes:
             elements.append({'from':a,'to':b,'faces':{face:{'texture':'#'+texture} for face in ['north','south','east','west','up','down']}})
-        write(ASSETS / f'models/block/{name}.json', {'ambientocclusion':True,'textures':{'wet':'proyecto_intento:block/wet_popo','dry':'proyecto_intento:block/dry_popo','particle':'proyecto_intento:block/dry_popo'},'elements':elements})
+        write(ASSETS / f'models/block/{name}.json', {'ambientocclusion':True,'textures':{'wet':'proyecto_intento:block/wet_popo','dry':'proyecto_intento:block/dry_popo','entrance':'minecraft:block/black_concrete','particle':'proyecto_intento:block/dry_popo'},'elements':elements})
         variants[f'piece={piece},stage={stage}'] = {'model':'proyecto_intento:block/'+name}
         geometry.append([a+b for a,b,_ in boxes])
         if boxes:

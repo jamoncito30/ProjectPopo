@@ -4,6 +4,7 @@
   "package": "org.examplee.proyecto_intento.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "PestilenceModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1
