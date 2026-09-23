@@ -1,0 +1,17 @@
+{
+  "format": "cuboids-in-model-pixels",
+  "texture": "fetid_slime_imagegen.png",
+  "texture_size": [64, 64],
+  "origin": [0, 24, 0],
+  "parts": [
+    {"name":"body","from":[-7,10,-7],"size":[14,14,14],"uv":[0,0]},
+    {"name":"crown_left","from":[-5,8,-2],"size":[4,3,4],"uv":[0,32]},
+    {"name":"crown_right","from":[2,9,1],"size":[3,2,3],"uv":[16,32]},
+    {"name":"eye_left","from":[-5,13,-7.5],"size":[3,3,1],"uv":[48,32]},
+    {"name":"eye_right","from":[2,13,-7.5],"size":[3,3,1],"uv":[48,32]},
+    {"name":"mouth","from":[-3,19,-7.5],"size":[6,2,1],"uv":[48,40]},
+    {"name":"drip","from":[3,21,-7.5],"size":[2,3,1],"uv":[32,32]}
+  ],
+  "animation": "Vertical squash and horizontal stretch on land/jump; crown follows body. Face looks toward target.",
+  "note": "Version-independent source geometry; runtime model and UV atlas integration pending."
+}

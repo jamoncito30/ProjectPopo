@@ -1,0 +1,13 @@
+{
+  "tool": "image_gen.imagegen (integrado)",
+  "corrections": [
+    {
+      "source": "art/source/invasion/beetle_soldier_opaque.png",
+      "prompt": "Edit target: the previously generated brown beetle soldier armor material. Preserve the exact plate/rivet design, layout, palette and pixel-art style. Change ONLY opacity: make every pixel in the complete square fully opaque alpha 255, filling any transparent cracks with dark umber armor material. No transparent pixels anywhere, no holes. This is a solid Minecraft armor surface texture, not a cutout sprite. No other changes."
+    },
+    {
+      "source": "art/source/invasion/beetle_artillery_opaque.png",
+      "prompt": "Edit target: provided dark green artillery beetle material. Preserve the exact chitin plates, brown straps, vine ties, wood braces, colors and square layout. Change only opacity: ensure EVERY pixel is fully opaque alpha 255, filling any partially transparent spots with matching underlying dark green or brown material. No transparent background or holes anywhere. It is a solid surface texture for Minecraft cuboid armor, not a cutout sprite. No other changes."
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "tool": "image_gen.imagegen (integrado)",
+  "assets": [
+    {
+      "name": "beetle_soldier",
+      "prompt": "Use case: stylized-concept. Asset type: production Minecraft pixel art seamless surface texture for armored melee dung beetle. Square edge-to-edge flat material, hardened dark umber dung and bronze chitin plates, chunky stone rivets, subtle worn ochre edges, readable broad armor plates. 32x32 logical pixels enlarged with nearest neighbor, limited earthy palette, no gradients, no lighting shadows, no perspective, no creature, no face, no text or border. Uniform tile suitable for UV mapping over small cuboid shell and helmet."
+    },
+    {
+      "name": "beetle_artillery",
+      "prompt": "Use case: stylized-concept. Production Minecraft seamless square pixel art material tile for artillery dung beetle shell and ammo harness. Flat edge-to-edge dark moss green chitin, broad brown leather straps tied with pale dry vine fibers and tiny wood braces, earthy and handmade military equipment. Coarse 32x32 logical pixels enlarged nearest neighbor. Uniform illumination, no perspective, no gradients, no creature or face, no words, no border. Texture only, suitable for cuboid UV mapping."
+    },
+    {
+      "name": "slime_runner",
+      "prompt": "Use case: stylized-concept. Production Minecraft surface texture tile, fast runner slime. Entire square FULLY OPAQUE flat apple-green gel, medium lime base, sparse darker fern-green diagonal stepped streaks, a few pale yellow-green flecks. Restrained natural green palette, not neon RGB green. Broad simple angular patches, 16x16 logical pixels enlarged nearest neighbor. No alpha transparency anywhere, no black patches, no holes, no gradients, no noise, no text, no border, no face, no creature depiction. Even flat lighting, edge to edge seamless material for UV mapped cubic mob.",
+      "rejected_prompt": "Use case: stylized-concept. Production Minecraft monster surface texture, square seamless acid green slime tile, luminous lime with sharp dark green angular streamlined streaks and very sparse yellow bubbles. Fast runner sewer slime material. Edge to edge flat orthographic uniform lighting, crisp chunky pixel art 32x32 logical pixels enlarged nearest neighbor, limited palette. No face, no body illustration, no text, no borders, no perspective, no gradients. Intended for UV mapped cubic monster with modeled eyes."
+    },
+    {
+      "name": "slime_artillery",
+      "prompt": "Use case: stylized-concept. Minecraft production seamless square surface texture for a swamp artillery slime. Fully OPAQUE image covering every pixel. Restrained murky olive green gel with large sparse mustard yellow swollen bubble patches, dark moss mottling. Flat top down texture, no face, no creature illustration, no text. Chunky 16x16 logical pixel art enlarged nearest neighbor, exactly flat solid color pixel cells, six color palette, no gradients, no black holes, no transparency, no noise, no perspective. Designed to wrap a cubic mob and inflated back sac."
+    },
+    {
+      "name": "slime_colossus",
+      "prompt": "Use case: stylized-concept. Production Minecraft square seamless pixel art surface texture for colossal sewer slime. Dense dark petrol green sludge, embedded ivory bone fragments, one tiny simplified skull fragment and rusty brown debris, seen through green jelly as muted angular shapes. Flat material filling entire image, opaque base; translucency will be handled in game. Coarse 32x32 logical pixels enlarged nearest neighbor, restrained six color palette, no gradient, no perspective, no creature portrait, no text, no border. Sparse inclusions and large readable sludge patches."
+    },
+    {
+      "name": "dung_shot",
+      "prompt": "Use case: stylized-concept. Minecraft inventory projectile sprite: one compact heavy dung ammunition ball, roughly round angular silhouette with dark umber compressed clods, ochre chipped edges and two tiny straw flecks. Crisp very coarse 16x16 logical pixel art enlarged nearest neighbor, limited six color palette, no smooth gradients. Single isolated centered item with generous genuinely transparent margin, no ground shadow, no text, no scene. Readable at sixteen pixels."
+    },
+    {
+      "name": "acid_spit",
+      "prompt": "Use case: stylized-concept. Minecraft projectile inventory sprite: one bright yellow-green acid spit glob, diagonal teardrop with short trailing drip toward upper right, heavy droplet lower left. Dark moss outline, lime body, small pale yellow highlight. Chunky 16x16 logical pixel art enlarged nearest neighbor, six flat colors no gradients, readable simple silhouette. One centered isolated item, generous genuinely transparent margin, no ground or shadow, no words or scenery."
+    }
+  ]
+}

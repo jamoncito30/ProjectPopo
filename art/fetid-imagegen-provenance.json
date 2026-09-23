@@ -1,0 +1,30 @@
+{
+  "tool": "image_gen.imagegen (integrado)",
+  "packaging": "tools/build-fetid-assets.ps1; alpha crop and nearest neighbor resizing only.",
+  "assets": [
+    {
+      "source": "art/source/fetid_slime_imagegen.png",
+      "prompt": "Use case: stylized-concept. Asset type: production Minecraft entity surface texture for a new sewer slime monster, Slime Fétido. Generate a square seamless tile of chunky pixel art viscous sewage slime, brown ochre and murky olive green, sparse small yellow-green bubbles and darker sludge patches. Flat orthographic material texture filling entire image edge to edge, uniform lighting, no perspective, no text, no creature face, no background, no border. Crisp pixel grid with only about 32 by 32 logical pixels enlarged with nearest neighbor, limited palette, vanilla Minecraft compatible. This will be UV mapped onto a custom cubic slime model with separate modeled eyes and mouth. Output one texture image."
+    },
+    {
+      "source": "art/source/biomass_imagegen.png",
+      "prompt": "Use case: stylized-concept. Production Minecraft inventory item sprite: one lump of viscous sewer biomass, dark brown and olive green gelatinous sludge with two small acid-yellow bubbles, lumpy dripping silhouette, readable at 16x16. Authentic crisp pixel art, coarse 16x16 logical pixel grid enlarged nearest neighbor, limited palette, dark outline. Isolated centered single item with generous transparent margin on genuinely transparent background. No text, no scene, no shadow outside silhouette."
+    },
+    {
+      "source": "art/source/pestilence_imagegen.png",
+      "prompt": "Use case: stylized-concept. Production Minecraft inventory item sprite of a pestilence potion: one squat clear glass bottle filled with murky olive green liquid, small ochre bubble inside, brown cork, pale cyan glass highlights, dark pixel outline. Authentic chunky low resolution pixel art, 16x16 logical grid enlarged nearest neighbor, few colors, centered readable silhouette with generous transparent margin. Genuinely transparent background. No label, text, scene, ground or cast shadow. Single item."
+    },
+    {
+      "source": "art/source/toxic_plunger_imagegen.png",
+      "prompt": "Use case: stylized-concept. Production Minecraft inventory weapon sprite: a toxic toilet plunger, wooden handle diagonally from lower left suction cup to upper right handle tip, dark olive green rubber suction cup covered in small viscous yellow-green drips, two copper bands on handle. Crisp coarse 16x16 logical pixel art enlarged nearest neighbor, limited earthy palette, dark contour, readable silhouette. One isolated item centered on genuinely transparent background with generous margin. No text, labels, scene or external shadows."
+    },
+    {
+      "source": "art/source/sewage_imagegen.png",
+      "prompt": "Use case: stylized-concept. Production Minecraft block material texture, a seamless square tile of dense sewage liquid seen flat directly from above: dark olive-brown viscous water, subtle olive eddies in angular stepped pixels, sparse yellow-green small bubbles. Crisp 16x16 logical pixel art enlarged nearest neighbor, flat even lighting, limited colors, texture fills entire image edge to edge. No perspective, no objects, no container, no text, no border. Distinct wet surface readable in game."
+    },
+    {
+      "source": "art/source/pestilent_torch_imagegen.png",
+      "prompt": "Use case: stylized-concept. Production Minecraft texture for a standing pestilent torch: single front elevation of an upright dark wooden torch, short copper collar near top holding a clump of dark brown biomass burning with a small eerie yellow-green pixel flame. Narrow vertical silhouette centered, authentic coarse 16x16 logical pixel grid enlarged nearest neighbor. Strong dark outline, limited palette. Genuinely transparent background with generous margin. No text, no scenery, no cast shadow, no extra objects."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:bucket"
+    },
+    {
+      "item": "proyecto_intento:viscous_biomass"
+    },
+    {
+      "item": "proyecto_intento:popo"
+    }
+  ],
+  "result": {
+    "id": "proyecto_intento:sewage_bucket",
+    "count": 1
+  }
+}

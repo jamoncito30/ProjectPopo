@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "proyecto_intento:block/pestilent_torch"
+  }
+}
