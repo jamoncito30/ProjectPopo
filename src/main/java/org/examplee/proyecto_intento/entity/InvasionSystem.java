@@ -87,7 +87,7 @@ public final class InvasionSystem {
             }
         });
         boolean adult = joinedNests.stream().anyMatch(gn -> gn.getOccupants().stream().anyMatch(r->r.getCompound("Entity").getInt("Age")>=0));
-        List<MobEntity> initialBeetles = new ArrayList<>();
+        List<DungBeetleEntity> initialBeetles = new ArrayList<>();
         for(var gn : joinedNests) {
             initialBeetles.addAll(w.getEntitiesByClass(DungBeetleEntity.class, new Box(gn.getPos()).expand(20), b->b.isAlive() && !b.isBaby() && b.combat().event==null && gn.getPos().equals(b.getNestPos())));
         }
@@ -261,7 +261,7 @@ public final class InvasionSystem {
         }
         var list=n.invasion.getList("Defeated",NbtElement.INT_ARRAY_TYPE);var id=NbtHelper.fromUuid(mob.getUuid());if(!list.contains(id))list.add(id);n.invasion.put("Defeated",list);n.markDirty();
     }
-    public static void finish(ServerWorld w,GrandBeetleNestBlockEntity coordinator,List<GrandBeetleNestBlockEntity> clusterNests,boolean won) {
+    public static void finish(ServerWorld w,GrandBeetleNestBlockEntity n,boolean won){if(!active(n))return;if(n.invasion.contains("Coordinator")){BlockPos p=BlockPos.fromLong(n.invasion.getLong("Coordinator"));if(w.isChunkLoaded(p)&&w.getBlockEntity(p) instanceof GrandBeetleNestBlockEntity c){n=c;}}finish(w,n,cluster(w,n),won);}private static void finish(ServerWorld w,GrandBeetleNestBlockEntity coordinator,List<GrandBeetleNestBlockEntity> clusterNests,boolean won) {
         if(!active(coordinator))return;
         var bar = ACTIVE.get(coordinator);
         for(var e:fighters(w,coordinator.invasion.getUuid("Id"),clusterBox(clusterNests)))if(e instanceof FetidSlimeEntity)e.discard();else clearFighter(e);
@@ -356,3 +356,4 @@ public final class InvasionSystem {
         mob.getNavigation().tick();mob.getMoveControl().tick();mob.getLookControl().tick();mob.getJumpControl().tick();return true;
     }
 }
+
