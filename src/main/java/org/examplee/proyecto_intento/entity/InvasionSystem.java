@@ -261,6 +261,18 @@ public final class InvasionSystem {
         }
         var list=n.invasion.getList("Defeated",NbtElement.INT_ARRAY_TYPE);var id=NbtHelper.fromUuid(mob.getUuid());if(!list.contains(id))list.add(id);n.invasion.put("Defeated",list);n.markDirty();
     }
+    public static boolean stopNearestInvasion(ServerWorld w, BlockPos p) {
+        GrandBeetleNestBlockEntity nearest = null;
+        double minD = Double.MAX_VALUE;
+        for (var n : ACTIVE.keySet()) {
+            if (active(n) && n.getWorld() == w) {
+                double d = n.getPos().getSquaredDistance(p);
+                if (d < minD) { minD = d; nearest = n; }
+            }
+        }
+        if (nearest != null) { finish(w, nearest, false); return true; }
+        return false;
+    }
     public static void finish(ServerWorld w,GrandBeetleNestBlockEntity n,boolean won){if(!active(n))return;if(n.invasion.contains("Coordinator")){BlockPos p=BlockPos.fromLong(n.invasion.getLong("Coordinator"));if(w.isChunkLoaded(p)&&w.getBlockEntity(p) instanceof GrandBeetleNestBlockEntity c){n=c;}}finish(w,n,cluster(w,n),won);}private static void finish(ServerWorld w,GrandBeetleNestBlockEntity coordinator,List<GrandBeetleNestBlockEntity> clusterNests,boolean won) {
         if(!active(coordinator))return;
         var bar = ACTIVE.get(coordinator);
@@ -356,6 +368,7 @@ public final class InvasionSystem {
         mob.getNavigation().tick();mob.getMoveControl().tick();mob.getLookControl().tick();mob.getJumpControl().tick();return true;
     }
 }
+
 
 
 

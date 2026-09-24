@@ -86,6 +86,17 @@ public class ModCommands {
                 })
             );
 
+            dispatcher.register(CommandManager.literal("stop_invasion")
+                .requires(source -> source.hasPermissionLevel(2))
+                .executes(context -> {
+                    ServerCommandSource source = context.getSource();
+                    boolean stopped = org.examplee.proyecto_intento.entity.InvasionSystem.stopNearestInvasion(source.getWorld(), BlockPos.ofFloored(source.getPosition()));
+                    if (stopped) source.sendMessage(Text.literal("Invasion detenida y abortada (Debug)."));
+                    else source.sendMessage(Text.literal("No se encontraron invasiones activas en este mundo."));
+                    return stopped ? 1 : 0;
+                })
+            );
+
             dispatcher.register(CommandManager.literal("kill_invasion_slimes")
                 .requires(source -> source.hasPermissionLevel(2))
                 .executes(context -> {
@@ -104,3 +115,5 @@ public class ModCommands {
         });
     }
 }
+
+
