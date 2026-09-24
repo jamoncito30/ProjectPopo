@@ -85,8 +85,22 @@ public class ModCommands {
                     return 1;
                 })
             );
+
+            dispatcher.register(CommandManager.literal("kill_invasion_slimes")
+                .requires(source -> source.hasPermissionLevel(2))
+                .executes(context -> {
+                    ServerCommandSource source = context.getSource();
+                    ServerWorld world = source.getWorld();
+                    int killed = 0;
+                    net.minecraft.util.math.Box box = source.getPlayer() != null ? source.getPlayer().getBoundingBox().expand(250) : new net.minecraft.util.math.Box(source.getPosition(), source.getPosition()).expand(250);
+                    for (var entity : world.getEntitiesByClass(org.examplee.proyecto_intento.entity.FetidSlimeEntity.class, box, e -> e.isAlive() && org.examplee.proyecto_intento.entity.InvasionSystem.participant(e))) {
+                        entity.kill();
+                        killed++;
+                    }
+                    source.sendMessage(Text.literal("Muerte instantánea a " + killed + " slimes fétidos de invasión. (Debug)"));
+                    return killed;
+                })
+            );
         });
     }
 }
-
-
