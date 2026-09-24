@@ -411,3 +411,4 @@ public final class InvasionSystem {
         mob.getNavigation().tick();mob.getMoveControl().tick();mob.getLookControl().tick();mob.getJumpControl().tick();return true;
     }
 }
+
