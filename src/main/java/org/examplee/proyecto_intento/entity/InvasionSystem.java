@@ -63,27 +63,37 @@ public final class InvasionSystem {
         UUID id=UUID.randomUUID();n.invasion.putUuid("Id",id);n.invasion.putInt("Ticks",0);n.invasion.putInt("Wave",0);n.invasion.putInt("Phase",0);
         for(var b:beetles){b.combat().event=id;b.combat().nest=n.getPos();b.combat().originalHealth=b.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH);b.getNavigation().stop();}
         for(var r:n.getOccupants())if(r.getCompound("Entity").getInt("Age")>=0)prepareResident(n,r);
-        ACTIVE.put(n,new ServerBossBar(Text.literal("InvasiÃ³n fÃ©tida â€” Â¡a las armas!"),BossBar.Color.GREEN,BossBar.Style.PROGRESS));
+        ACTIVE.put(n,new ServerBossBar(Text.literal("Invasión fétida – ¡A las armas!"),BossBar.Color.GREEN,BossBar.Style.PROGRESS));
         n.markDirty();return true;
     }
     private static void prepareResident(GrandBeetleNestBlockEntity n,NbtCompound resident) {
         var data=resident.getCompound("Entity");var c=data.getCompound("Invasion");
         if(c.getInt("Role")>0)return;
         c.putUuid("Event",n.invasion.getUuid("Id"));c.putLong("Nest",n.getPos().asLong());
-        c.putInt("Role",n.getWorld().random.nextFloat()<.65F?1:2);c.putDouble("OriginalMaxHealth",8);data.put("Invasion",c);
-        // Vanilla attribute base is restored by clearFighter; actual equipment happens inside.
+        boolean melee=n.getWorld().random.nextFloat()<.65F;
+        c.putInt("Role",melee?1:2);c.putDouble("OriginalMaxHealth",8);data.put("Invasion",c);
+        
+        double maxHp = melee ? 65 : 40;
+        double speed = melee ? 0.16 : 0.25;
+
         var attributes=data.getList("Attributes",NbtElement.COMPOUND_TYPE);
-        for(int i=0;i<attributes.size();i++)if(attributes.getCompound(i).getString("Name").equals("minecraft:generic.max_health")) {
-            c.putDouble("OriginalMaxHealth",attributes.getCompound(i).getDouble("Base"));attributes.getCompound(i).putDouble("Base",40);
+        for(int i=0;i<attributes.size();i++) {
+            if(attributes.getCompound(i).getString("Name").equals("minecraft:generic.max_health")) {
+                c.putDouble("OriginalMaxHealth",attributes.getCompound(i).getDouble("Base"));
+                attributes.getCompound(i).putDouble("Base",maxHp);
+            }
+            if(attributes.getCompound(i).getString("Name").equals("minecraft:generic.movement_speed")) {
+                attributes.getCompound(i).putDouble("Base",speed);
+            }
         }
-        data.putFloat("Health",40);resident.putInt("TicksInside",0);
+        data.putFloat("Health",(float)maxHp);resident.putInt("TicksInside",0);
     }
     public static boolean tickNest(ServerWorld w,GrandBeetleNestBlockEntity n) {
         if(!active(n)) {
             if(w.getTime()%20==0)for(var player:w.getPlayers())if(player.hasStatusEffect(ModEffects.FETID_OMEN) && player.squaredDistanceTo(n.getPos().toCenterPos())<=100 && start(w,n)) {player.removeStatusEffect(ModEffects.FETID_OMEN);break;}
             if(!active(n))return false;
         }
-        var bar=ACTIVE.computeIfAbsent(n,k->new ServerBossBar(Text.literal("InvasiÃ³n fÃ©tida"),BossBar.Color.GREEN,BossBar.Style.PROGRESS));
+        var bar=ACTIVE.computeIfAbsent(n,k->new ServerBossBar(Text.literal("Invasión fétida"),BossBar.Color.GREEN,BossBar.Style.PROGRESS));
         if(w.getTime()%20==0) {
             for(var p:w.getPlayers())if(p.squaredDistanceTo(n.getPos().toCenterPos())<RADIUS*RADIUS)bar.addPlayer(p);else bar.removePlayer(p);
             // Freeze progress when encounter chunks unload; never count unloaded enemies as defeated.
@@ -96,16 +106,34 @@ public final class InvasionSystem {
         for(var it=n.getOccupants().iterator();it.hasNext();) {
             var r=it.next();if(r.getCompound("Entity").getInt("Age")<0)continue;
             prepareResident(n,r);r.putInt("TicksInside",r.getInt("TicksInside")+1);
-            if(released<2 && r.getInt("TicksInside")>=40 && n.release(w,r,false)){it.remove();released++;}
+            if(released<4 && r.getInt("TicksInside")>=20 && n.release(w,r,false)){it.remove();released++;} // Sped up exit slightly
         }
         if(ticks%20!=0){n.markDirty();return true;}
         var all=fighters(w,n);var defenders=all.stream().filter(e->e instanceof DungBeetleEntity && ((InvasionParticipant)e).combatRole()>0).toList();
         boolean reserves=n.getOccupants().stream().anyMatch(r->r.getCompound("Entity").getInt("Age")>=0);
         if(ticks>1200 && defenders.isEmpty() && !reserves){finish(w,n,false);return true;}
-        if(ticks>12000){finish(w,n,false);return true;}
+        if(ticks>18000){finish(w,n,false);return true;}
         if(n.invasion.getInt("Phase")==0) {
-            bar.setName(Text.literal("InvasiÃ³n fÃ©tida â€” equipando la colonia"));bar.setPercent(Math.min(1,ticks/200F));
-            if(ticks>=200 && !defenders.isEmpty()){n.invasion.putInt("Phase",1);n.invasion.putInt("NextWave",ticks);}
+            int remaining = Math.max(0, 60 - (ticks/20));
+            bar.setName(Text.literal("Invasión fétida – Equipando la colonia (" + remaining + "s)"));
+            bar.setPercent(Math.clamp((float)ticks/1200F,0,1));
+            
+            // Advance when time completes
+            if(ticks >= 1200 && (!defenders.isEmpty() || !all.isEmpty())) {
+                n.invasion.putInt("Phase",1);
+                n.invasion.putInt("NextWave",ticks);
+                // Force equip remaining roaming beetles
+                for(var b : all) {
+                    if (b instanceof DungBeetleEntity db && db.combatRole() == 0) {
+                        boolean melee = w.random.nextFloat() < .65F;
+                        db.combatRole(melee ? 1 : 2);
+                        double maxHp = melee ? 65 : 40;
+                        db.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(maxHp);
+                        db.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(melee ? 0.16 : 0.25);
+                        db.setHealth((float)maxHp);
+                    }
+                }
+            }
         } else {
             NbtList pending=n.invasion.getList("Enemies",NbtElement.INT_ARRAY_TYPE);
             boolean alive=false,unloaded=false;
@@ -114,27 +142,32 @@ public final class InvasionSystem {
                     var dead=n.invasion.getList("Defeated",NbtElement.INT_ARRAY_TYPE);if(!dead.contains(entry))unloaded=true;
                 } else if(e.isAlive())alive=true;
             }
-            int wave=n.invasion.getInt("Wave");bar.setName(Text.literal("InvasiÃ³n fÃ©tida â€” oleada "+wave+"/3"));bar.setPercent(Math.clamp((wave-1+(alive?0:.95F))/3F,0,1));
+            int wave=n.invasion.getInt("Wave");
+            bar.setName(Text.literal("Invasión fétida – Oleada "+wave+"/5"));
+            bar.setPercent(Math.clamp((wave-1+(alive?0:.95F))/5F,0,1));
+            
             if(!alive && !unloaded && ticks>=n.invasion.getInt("NextWave")) {
-                if(wave>=3){finish(w,n,true);return true;}
+                if(wave>=5){finish(w,n,true);return true;}
                 if(spawnWave(w,n,wave+1,defenders.size())) {n.invasion.putInt("Wave",wave+1);n.invasion.putInt("NextWave",ticks+100);}
             }
         }
         n.markDirty();return true;
     }
-        private static boolean spawnWave(ServerWorld w,GrandBeetleNestBlockEntity n,int wave,int defenders) {
-        int count=Math.clamp(defenders/2+wave*3,3,35);var prepared=new ArrayList<FetidSlimeEntity>();
-        float hpMult = defenders >= 25 ? 1.75f : defenders >= 15 ? 1.3f : 1.0f;
+    private static boolean spawnWave(ServerWorld w,GrandBeetleNestBlockEntity n,int wave,int defenders) {
+        int count=Math.clamp((defenders/2)+wave*5,4,45);var prepared=new ArrayList<FetidSlimeEntity>();
+        float hpMult = defenders >= 25 ? 1.75f : defenders >= 12 ? 1.35f : 1.0f;
+        if (wave >= 4) hpMult *= 1.15f; 
+        
         for(int i=0;i<count;i++) {
             var slime=ModEntities.FETID_SLIME.create(w);if(slime==null)return false;
-            int role=wave==3 && i<(1+(defenders/10))?3:i%3==2?2:1;
+            int role=wave==5 && i<(2+(defenders/10))?3:i%3==2?2:1;
             slime.combat().event=n.invasion.getUuid("Id");slime.combat().nest=n.getPos();slime.combatRole(role);
-            slime.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue((role==3?55:role==2?18:12)*hpMult);slime.setHealth(slime.getMaxHealth());
+            slime.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue((role==3?65:role==2?22:15)*hpMult);slime.setHealth(slime.getMaxHealth());
             boolean placed=false;
             for(int trial=0;trial<32;trial++) {
                 double angle=(i+trial*.37)*Math.PI*2/count;
-                BlockPos p=n.getPos().add((int)(Math.cos(angle)*16),0,(int)(Math.sin(angle)*16));
-                for(int dy=3;dy>=-3;dy--) {BlockPos at=p.up(dy);if(!w.isChunkLoaded(at))continue;
+                BlockPos p=n.getPos().add((int)(Math.cos(angle)*18),0,(int)(Math.sin(angle)*18));
+                for(int dy=4;dy>=-4;dy--) {BlockPos at=p.up(dy);if(!w.isChunkLoaded(at))continue;
                     slime.refreshPositionAndAngles(at.getX()+.5,at.getY()+.05,at.getZ()+.5,0,0);
                     if(!w.getBlockState(at.down()).getCollisionShape(w,at.down()).isEmpty() && w.getFluidState(at).isEmpty() && w.isSpaceEmpty(slime)
                         && prepared.stream().noneMatch(e->e.getBoundingBox().intersects(slime.getBoundingBox()))){placed=true;break;}
@@ -154,18 +187,26 @@ public final class InvasionSystem {
         for(var e:fighters(w,n))if(e instanceof FetidSlimeEntity)e.discard();else clearFighter(e);
         for(var r:n.getOccupants()) {var data=r.getCompound("Entity");var c=data.getCompound("Invasion");
             if(c.containsUuid("Event")){var attrs=data.getList("Attributes",NbtElement.COMPOUND_TYPE);double max=c.getDouble("OriginalMaxHealth");if(max<=0)max=8;
-                for(int i=0;i<attrs.size();i++)if(attrs.getCompound(i).getString("Name").equals("minecraft:generic.max_health"))attrs.getCompound(i).putDouble("Base",max);
+                for(int i=0;i<attrs.size();i++) {
+                    if(attrs.getCompound(i).getString("Name").equals("minecraft:generic.max_health")) attrs.getCompound(i).putDouble("Base",max);
+                    if(attrs.getCompound(i).getString("Name").equals("minecraft:generic.movement_speed")) attrs.getCompound(i).putDouble("Base",0.22);
+                }
                 data.putFloat("Health",Math.min(data.getFloat("Health"),(float)max));data.remove("Invasion");}
         }
         for(String key:new HashSet<>(n.invasion.getKeys()))n.invasion.remove(key);
-        var bar=ACTIVE.remove(n);if(bar!=null){for(var p:bar.getPlayers())p.sendMessage(Text.literal(won?"Â¡La colonia ha defendido el nido!":"La invasiÃ³n ha terminado."),false);bar.clearPlayers();}
+        var bar=ACTIVE.remove(n);if(bar!=null){for(var p:bar.getPlayers())p.sendMessage(Text.literal(won?"¡La colonia ha defendido el nido!":"La invasión ha terminado."),false);bar.clearPlayers();}
         n.markDirty();
     }
     public static void clearFighter(MobEntity mob) {
         if(!(mob instanceof InvasionParticipant p))return;
-        if(mob instanceof DungBeetleEntity && p.combatRole()>0){mob.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(Math.max(1,p.combat().originalHealth));mob.setHealth(Math.min(mob.getHealth(),mob.getMaxHealth()));}
+        if(mob instanceof DungBeetleEntity && p.combatRole()>0) {
+            mob.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(Math.max(1,p.combat().originalHealth));
+            mob.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(0.22);
+            mob.setHealth(Math.min(mob.getHealth(),mob.getMaxHealth()));
+        }
         p.combatRole(0);p.combat().clear();mob.setTarget(null);mob.getNavigation().stop();
     }
+    
     /** Called instead of vanilla goals while enrolled. Physics and persistence remain vanilla. */
     public static boolean tickFighter(MobEntity mob) {
         if(!(mob instanceof InvasionParticipant p) || p.combat().event==null)return false;
@@ -178,18 +219,51 @@ public final class InvasionSystem {
             if(--c.repath<=0){n.navigateToPerimeter(b,1.6);c.repath=20;}
             if(n.atPerimeter(b))n.tryEnter(b);
         } else {
-            if(mob.squaredDistanceTo(n.getPos().toCenterPos())>22*22){if(--c.repath<=0){mob.getNavigation().startMovingTo(n.getPos().getX()+.5,mob.getY(),n.getPos().getZ()+.5,1.2);c.repath=20;}}
-            else {
-                var target=mob.getWorld().getEntitiesByClass(MobEntity.class,mob.getBoundingBox().expand(18),e->e.isAlive() && enemies(mob,e) && ((InvasionParticipant)e).combatRole()>0)
+            if(mob.squaredDistanceTo(n.getPos().toCenterPos())>24*24){
+                if(--c.repath<=0){mob.getNavigation().startMovingTo(n.getPos().getX()+.5,mob.getY(),n.getPos().getZ()+.5,1.2);c.repath=20;}
+            } else {
+                var target=mob.getWorld().getEntitiesByClass(MobEntity.class,mob.getBoundingBox().expand(22),e->e.isAlive() && enemies(mob,e) && ((InvasionParticipant)e).combatRole()>0)
                     .stream().min(Comparator.comparingDouble(mob::squaredDistanceTo)).orElse(null);
+                    
                 if(target!=null) {
-                    double d=mob.squaredDistanceTo(target);boolean ranged=p.combatRole()==2;
+                    double d=mob.squaredDistanceTo(target);
+                    // Ranged role applies to artillery beetles and maybe artillery slimes (role 2).
+                    boolean ranged = p.combatRole()==2; 
                     mob.getLookControl().lookAt(target,30,30);
-                    if(--c.repath<=0){if(!ranged || d>64)mob.getNavigation().startMovingTo(target,1.3);else mob.getNavigation().stop();c.repath=15;}
-                    if(mob.getMoveControl() instanceof SlimeMoveControlAccessor slime){var delta=target.getPos().subtract(mob.getPos());slime.popocraft$look((float)(Math.toDegrees(Math.atan2(delta.z,delta.x))-90),true);slime.popocraft$move(ranged && d<49?0:1.2);}
+                    
+                    if(--c.repath<=0) {
+                        if(ranged) {
+                            if(d < 16.0) { // Too close! ~4 blocks 
+                                Vec3d dir = mob.getPos().subtract(target.getPos()).normalize();
+                                Vec3d away = mob.getPos().add(dir.multiply(5));
+                                mob.getNavigation().startMovingTo(away.x, away.y, away.z, 1.4);
+                            } else if(d > 81.0) { // Too far! ~9 blocks
+                                mob.getNavigation().startMovingTo(target, 1.15);
+                            } else {
+                                mob.getNavigation().stop();
+                            }
+                        } else {
+                            // Melee approach
+                            mob.getNavigation().startMovingTo(target, 1.25);
+                        }
+                        c.repath = 15;
+                    }
+                    
+                    if(mob.getMoveControl() instanceof SlimeMoveControlAccessor slime){
+                        var delta=target.getPos().subtract(mob.getPos());
+                        slime.popocraft$look((float)(Math.toDegrees(Math.atan2(delta.z,delta.x))-90),true);
+                        slime.popocraft$move(ranged && d < 16.0 ? 0.0f : 1.2f); // Ranged slime hesitates to bounce if too close, but normally jump towards target.
+                    }
+                    
                     if(--c.cooldown<=0 && mob.canSee(target)) {
-                        if(ranged && d<144){InvasionProjectileEntity.fire(mob,target);c.cooldown=35;}
-                        else if(d<Math.pow(mob.getWidth()+target.getWidth()+.5,2)){target.damage(mob.getDamageSources().mobAttack(mob),mob instanceof DungBeetleEntity?6:p.combatRole()==3?4:2);c.cooldown=20;}
+                        if(ranged && d<196) { // 14 blocks range for shooting
+                            InvasionProjectileEntity.fire(mob,target);
+                            c.cooldown = mob instanceof DungBeetleEntity ? 40 : 50; 
+                        }
+                        else if(d<Math.pow(mob.getWidth()+target.getWidth()+.9,2)) {
+                            target.damage(mob.getDamageSources().mobAttack(mob),mob instanceof DungBeetleEntity ? (p.combatRole()==1? 8 : 4) : p.combatRole()==3? 6 : 3);
+                            c.cooldown = 20; 
+                        }
                     }
                 }else mob.getNavigation().stop();
             }
@@ -198,4 +272,3 @@ public final class InvasionSystem {
         mob.getNavigation().tick();mob.getMoveControl().tick();mob.getLookControl().tick();mob.getJumpControl().tick();return true;
     }
 }
-
