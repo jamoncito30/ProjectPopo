@@ -27,7 +27,7 @@ public final class InvasionSystem {
         ServerTickEvents.END_SERVER_TICK.register(server -> ACTIVE.entrySet().removeIf(e -> {
             var nest=e.getKey();var w=nest.getWorld();
             if(nest.isRemoved() || w==null || w.getServer()!=server || !w.isChunkLoaded(nest.getPos()) || !active(nest)) {
-                if(!nest.invasion.contains("Coordinator")) e.getValue().clearPlayers();
+                if(!nest.invasion.contains("Coordinator")) e.getValue().clearPlayers(); // Protect shared bar
                 return true;
             }
             return false;
@@ -38,6 +38,18 @@ public final class InvasionSystem {
         AttackBlockCallback.EVENT.register((p,w,h,pos,side)->protectedAt(w,pos)?ActionResult.FAIL:ActionResult.PASS);
         UseItemCallback.EVENT.register((p,w,h)->protectedAt(w,p.getBlockPos())?TypedActionResult.fail(p.getStackInHand(h)):TypedActionResult.pass(p.getStackInHand(h)));
         PlayerBlockBreakEvents.BEFORE.register((w,p,pos,state,be)->!protectedAt(w,pos));
+    }
+    public static boolean stopNearestInvasion(ServerWorld w, BlockPos p) {
+        GrandBeetleNestBlockEntity nearest = null;
+        double minD = Double.MAX_VALUE;
+        for (var n : ACTIVE.keySet()) {
+            if (active(n) && n.getWorld() == w) {
+                double d = n.getPos().getSquaredDistance(p);
+                if (d < minD) { minD = d; nearest = n; }
+            }
+        }
+        if (nearest != null) { finish(w, nearest, false); return true; }
+        return false;
     }
     public static boolean active(GrandBeetleNestBlockEntity n){return n.invasion.containsUuid("Id");}
     public static boolean participant(Entity e){return e instanceof InvasionParticipant p && p.combat().event!=null;}
@@ -89,7 +101,7 @@ public final class InvasionSystem {
         boolean adult = joinedNests.stream().anyMatch(gn -> gn.getOccupants().stream().anyMatch(r->r.getCompound("Entity").getInt("Age")>=0));
         List<DungBeetleEntity> initialBeetles = new ArrayList<>();
         for(var gn : joinedNests) {
-            initialBeetles.addAll(w.getEntitiesByClass(DungBeetleEntity.class, new Box(gn.getPos()).expand(20), b->b.isAlive() && !b.isBaby() && b.combat().event==null && gn.getPos().equals(b.getNestPos())));
+            initialBeetles.addAll(w.getEntitiesByClass(DungBeetleEntity.class, new Box(gn.getPos()).expand(30), b->b.isAlive() && !b.isBaby() && b.combat().event==null && gn.getPos().equals(b.getNestPos())));
         }
         if(!adult && initialBeetles.isEmpty()) return false;
         
@@ -130,8 +142,8 @@ public final class InvasionSystem {
         boolean melee=w.random.nextFloat()<.65F;
         c.putInt("Role",melee?1:2);c.putDouble("OriginalMaxHealth",8);data.put("Invasion",c);
         
-        double maxHp = melee ? 65 : 40;
-        double speed = melee ? 0.16 : 0.25;
+        double maxHp = melee ? 120 : 65;
+        double speed = melee ? 0.17 : 0.25;
 
         var attributes=data.getList("Attributes",NbtElement.COMPOUND_TYPE);
         for(int i=0;i<attributes.size();i++) {
@@ -158,11 +170,11 @@ public final class InvasionSystem {
         
         if(w.getTime()%20==0) {
             for(var p:w.getPlayers()) {
-                boolean near = clusterNests.stream().anyMatch(gn -> p.squaredDistanceTo(gn.getPos().toCenterPos()) < RADIUS*RADIUS);
+                boolean near = clusterNests.stream().anyMatch(gn -> p.squaredDistanceTo(gn.getPos().toCenterPos()) < RADIUS*RADIUS*2);
                 if(near) bar.addPlayer(p); else bar.removePlayer(p);
             }
             for(var gn : clusterNests) {
-                for(int x=-RADIUS;x<=RADIUS;x+=8)for(int z=-RADIUS;z<=RADIUS;z+=8)if(!w.isChunkLoaded(gn.getPos().add(x,0,z)))return true;
+                for(int x=-RADIUS;x<=RADIUS;x+=8)for(int z=-RADIUS;z<=RADIUS;z+=8)if(!w.isChunkLoaded(gn.getPos().add(x,0,z)))return true; // Wait for chunks
             }
             if(!n.isStructureIntact() && clusterNests.size() <= 1){finish(w,n,clusterNests,false);return true;}
         }
@@ -197,60 +209,98 @@ public final class InvasionSystem {
                     if (b instanceof DungBeetleEntity db && db.combatRole() == 0) {
                         boolean melee = w.random.nextFloat() < .65F;
                         db.combatRole(melee ? 1 : 2);
-                        double maxHp = melee ? 65 : 40;
+                        double maxHp = melee ? 120 : 65;
                         db.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(maxHp);
-                        db.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(melee ? 0.16 : 0.25);
+                        db.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(melee ? 0.17 : 0.25);
                         db.setHealth((float)maxHp);
                     }
                 }
             }
         } else {
             NbtList pending=n.invasion.getList("Enemies",NbtElement.INT_ARRAY_TYPE);
-            boolean alive=false,unloaded=false;
-            for(var entry:pending) {UUID id=net.minecraft.nbt.NbtHelper.toUuid(entry);Entity e=w.getEntity(id);
-                if(e==null){ 
-                    var dead=n.invasion.getList("Defeated",NbtElement.INT_ARRAY_TYPE);if(!dead.contains(entry))unloaded=true;
-                } else if(e.isAlive())alive=true;
-            }
             int wave=n.invasion.getInt("Wave");
+            int waveTicks = ticks - (n.invasion.getInt("NextWave") - 100);
+            boolean alive=false;
+            boolean spawning = n.invasion.contains("Spawning");
+            
+            if (spawning) {
+                var s = n.invasion.getCompound("Spawning");
+                int total = s.getInt("Total");
+                int spawned = s.getInt("Spawned");
+                if (spawned < total) {
+                    alive = true; // Always alive while there are spawns left!
+                    if (ticks % 25 == 0) {
+                        int squadSize = Math.min(3 + w.random.nextInt(2), total - spawned);
+                        for (int k = 0; k < squadSize; k++) spawnOneSlime(w, n, clusterNests, wave, s.getInt("Defenders"), spawned + k, total, all);
+                        s.putInt("Spawned", spawned + squadSize);
+                    }
+                } else {
+                    n.invasion.remove("Spawning");
+                    spawning = false;
+                }
+            }
+            
+            for(int i = 0; i < pending.size(); i++) {
+                UUID id = net.minecraft.nbt.NbtHelper.toUuid(pending.get(i));
+                Entity e = w.getEntity(id);
+                if (e != null && e.isAlive()) {
+                    alive = true;
+                    if (e instanceof FetidSlimeEntity slime && !spawning) {
+                        if (waveTicks > 900) slime.addStatusEffect(new net.minecraft.entity.effect.StatusEffectInstance(net.minecraft.entity.effect.StatusEffects.GLOWING, 40, 0, false, false));
+                        if (waveTicks > 1200 && ticks % 20 == 0) slime.damage(w.getDamageSources().magic(), 5.0F); // auto kill hard cap
+                    }
+                }
+            }
+            
             bar.setName(Text.literal("Invasión fétida – Oleada combinada "+wave+"/5"));
             bar.setPercent(Math.clamp((wave-1+(alive?0:.95F))/5F,0,1));
             
-            if(!alive && !unloaded && ticks>=n.invasion.getInt("NextWave")) {
+            if(!alive && ticks>=n.invasion.getInt("NextWave")) {
                 if(wave>=5){finish(w,n,clusterNests,true);return true;}
-                if(spawnWave(w,n,clusterNests,wave+1,defenders.size(),all)) {n.invasion.putInt("Wave",wave+1);n.invasion.putInt("NextWave",ticks+100);}
+                beginSpawnWave(n, clusterNests, wave+1, defenders.size());
+                n.invasion.putInt("NextWave",ticks+100);
             }
         }
         n.markDirty();return true;
     }
-    private static boolean spawnWave(ServerWorld w,GrandBeetleNestBlockEntity coordinator,List<GrandBeetleNestBlockEntity> clusterNests,int wave,int defenders,List<MobEntity> all) {
+    
+    private static void beginSpawnWave(GrandBeetleNestBlockEntity coordinator, List<GrandBeetleNestBlockEntity> clusterNests, int wave, int defenders) {
         int count=Math.clamp((defenders/2)+wave*(3+clusterNests.size()*2),4*clusterNests.size(),60*clusterNests.size());
-        var prepared=new ArrayList<FetidSlimeEntity>();
+        coordinator.invasion.putInt("Wave", wave); 
+        coordinator.invasion.put("Enemies", new NbtList());
+        coordinator.invasion.put("Defeated", new NbtList());
         
+        NbtCompound s = new NbtCompound();
+        s.putInt("Total", count);
+        s.putInt("Spawned", 0);
+        s.putInt("Defenders", defenders);
+        coordinator.invasion.put("Spawning", s);
+    }
+    
+    private static void spawnOneSlime(ServerWorld w,GrandBeetleNestBlockEntity coordinator,List<GrandBeetleNestBlockEntity> clusterNests,int wave,int defenders,int i,int count,List<MobEntity> all) {
         float hpMult = defenders >= (15*clusterNests.size()) ? 1.75f : defenders >= (8*clusterNests.size()) ? 1.35f : 1.0f;
         if (wave >= 4) hpMult *= 1.15f; 
+        var slime=ModEntities.FETID_SLIME.create(w);if(slime==null)return;
+        GrandBeetleNestBlockEntity targetNest = clusterNests.get(i % clusterNests.size());
+        int role = wave==5 && i<(2+(defenders/10))?3:i%3==2?2:1;
         
-        for(int i=0;i<count;i++) {
-            var slime=ModEntities.FETID_SLIME.create(w);if(slime==null)return false;
-            GrandBeetleNestBlockEntity targetNest = clusterNests.get(i % clusterNests.size());
-            int role = wave==5 && i<(2+(defenders/10))?3:i%3==2?2:1;
-            
-            slime.combat().event=coordinator.invasion.getUuid("Id");slime.combat().nest=targetNest.getPos();slime.combatRole(role);
-            slime.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue((role==3?65:role==2?22:15)*hpMult);slime.setHealth(slime.getMaxHealth());
-            boolean placed=false;
-            for(int trial=0;trial<32;trial++) {
-                double angle=(i+trial*.37)*Math.PI*2/Math.max(1, count/clusterNests.size());
-                BlockPos p=targetNest.getPos().add((int)(Math.cos(angle)*19),0,(int)(Math.sin(angle)*19));
-                for(int dy=4;dy>=-4;dy--) {BlockPos at=p.up(dy);if(!w.isChunkLoaded(at))continue;
-                    slime.refreshPositionAndAngles(at.getX()+.5,at.getY()+.05,at.getZ()+.5,0,0);
-                    if(!w.getBlockState(at.down()).getCollisionShape(w,at.down()).isEmpty() && w.getFluidState(at).isEmpty() && w.isSpaceEmpty(slime)
-                        && prepared.stream().noneMatch(e->e.getBoundingBox().intersects(slime.getBoundingBox())) && all.stream().noneMatch(t -> t.getBoundingBox().intersects(slime.getBoundingBox()))){placed=true;break;}
-                }if(placed)break;
-            }if(!placed)return false;prepared.add(slime);
+        slime.combat().event=coordinator.invasion.getUuid("Id");slime.combat().nest=targetNest.getPos();slime.combatRole(role);
+        slime.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue((role==3?65:role==2?22:15)*hpMult);slime.setHealth(slime.getMaxHealth());
+        boolean placed=false;
+        for(int trial=0;trial<32;trial++) {
+            double angle=(i+trial*.37)*Math.PI*2/Math.max(1, count/clusterNests.size());
+            BlockPos p=targetNest.getPos().add((int)(Math.cos(angle)*19),0,(int)(Math.sin(angle)*19));
+            for(int dy=4;dy>=-4;dy--) {BlockPos at=p.up(dy);if(!w.isChunkLoaded(at))continue;
+                slime.refreshPositionAndAngles(at.getX()+.5,at.getY()+.05,at.getZ()+.5,0,0);
+                if(!w.getBlockState(at.down()).getCollisionShape(w,at.down()).isEmpty() && w.getFluidState(at).isEmpty() && w.isSpaceEmpty(slime)
+                     && all.stream().noneMatch(t -> t.getBoundingBox().intersects(slime.getBoundingBox()))){placed=true;break;}
+            }if(placed)break;
         }
-        NbtList ids=new NbtList();
-        for(var e:prepared)if(w.spawnEntity(e))ids.add(NbtHelper.fromUuid(e.getUuid()));
-        if(ids.isEmpty())return false;coordinator.invasion.put("Enemies",ids);coordinator.invasion.put("Defeated",new NbtList());return true;
+        if(placed && w.spawnEntity(slime)) {
+            NbtList ids = coordinator.invasion.getList("Enemies", NbtElement.INT_ARRAY_TYPE);
+            ids.add(NbtHelper.fromUuid(slime.getUuid()));
+            all.add(slime);
+        }
     }
     public static void died(MobEntity mob) {
         var n=nest(mob);if(n==null || !active(n) || !(mob instanceof FetidSlimeEntity))return;
@@ -261,19 +311,8 @@ public final class InvasionSystem {
         }
         var list=n.invasion.getList("Defeated",NbtElement.INT_ARRAY_TYPE);var id=NbtHelper.fromUuid(mob.getUuid());if(!list.contains(id))list.add(id);n.invasion.put("Defeated",list);n.markDirty();
     }
-    public static boolean stopNearestInvasion(ServerWorld w, BlockPos p) {
-        GrandBeetleNestBlockEntity nearest = null;
-        double minD = Double.MAX_VALUE;
-        for (var n : ACTIVE.keySet()) {
-            if (active(n) && n.getWorld() == w) {
-                double d = n.getPos().getSquaredDistance(p);
-                if (d < minD) { minD = d; nearest = n; }
-            }
-        }
-        if (nearest != null) { finish(w, nearest, false); return true; }
-        return false;
-    }
-    public static void finish(ServerWorld w,GrandBeetleNestBlockEntity n,boolean won){if(!active(n))return;if(n.invasion.contains("Coordinator")){BlockPos p=BlockPos.fromLong(n.invasion.getLong("Coordinator"));if(w.isChunkLoaded(p)&&w.getBlockEntity(p) instanceof GrandBeetleNestBlockEntity c){n=c;}}finish(w,n,cluster(w,n),won);}private static void finish(ServerWorld w,GrandBeetleNestBlockEntity coordinator,List<GrandBeetleNestBlockEntity> clusterNests,boolean won) {
+    public static void finish(ServerWorld w,GrandBeetleNestBlockEntity n,boolean won){if(!active(n))return;if(n.invasion.contains("Coordinator")){BlockPos p=BlockPos.fromLong(n.invasion.getLong("Coordinator"));if(w.isChunkLoaded(p)&&w.getBlockEntity(p) instanceof GrandBeetleNestBlockEntity c){n=c;}}finish(w,n,cluster(w,n),won);}
+    private static void finish(ServerWorld w,GrandBeetleNestBlockEntity coordinator,List<GrandBeetleNestBlockEntity> clusterNests,boolean won) {
         if(!active(coordinator))return;
         var bar = ACTIVE.get(coordinator);
         for(var e:fighters(w,coordinator.invasion.getUuid("Id"),clusterBox(clusterNests)))if(e instanceof FetidSlimeEntity)e.discard();else clearFighter(e);
@@ -323,23 +362,21 @@ public final class InvasionSystem {
                     
                 if(target!=null) {
                     double d=mob.squaredDistanceTo(target);
-                    // Ranged role applies to artillery beetles and maybe artillery slimes (role 2).
                     boolean ranged = p.combatRole()==2; 
                     mob.getLookControl().lookAt(target,30,30);
                     
                     if(--c.repath<=0) {
                         if(ranged) {
-                            if(d < 20.0) { // Too close! ~4.5 blocks 
+                            if(d < 20.0) { 
                                 Vec3d dir = mob.getPos().subtract(target.getPos()).normalize();
                                 Vec3d away = mob.getPos().add(dir.multiply(5));
                                 mob.getNavigation().startMovingTo(away.x, away.y, away.z, 1.4);
-                            } else if(d > 81.0) { // Too far! ~9 blocks
+                            } else if(d > 81.0) {
                                 mob.getNavigation().startMovingTo(target, 1.15);
                             } else {
                                 mob.getNavigation().stop();
                             }
                         } else {
-                            // Melee approach
                             mob.getNavigation().startMovingTo(target, 1.25);
                         }
                         c.repath = 15;
@@ -348,33 +385,29 @@ public final class InvasionSystem {
                     if(mob.getMoveControl() instanceof SlimeMoveControlAccessor slime){
                         var delta=target.getPos().subtract(mob.getPos());
                         slime.popocraft$look((float)(Math.toDegrees(Math.atan2(delta.z,delta.x))-90),true);
-                        slime.popocraft$move(ranged && d < 20.0 ? 0.0f : 1.2f); // Ranged slime hesitates to bounce if too close, but normally jump towards target.
+                        slime.popocraft$move(ranged && d < 20.0 ? 0.0f : 1.2f);
                     }
                     
                     if(--c.cooldown<=0 && mob.canSee(target)) {
-                        if(ranged && d<196) { // 14 blocks range for shooting
+                        if(ranged && d<196) { 
                             InvasionProjectileEntity.fire(mob,target);
                             c.cooldown = mob instanceof DungBeetleEntity ? 40 : 50; 
                         }
                         else if(d<Math.pow(mob.getWidth()+target.getWidth()+.9,2)) {
-                            target.damage(mob.getDamageSources().mobAttack(mob),mob instanceof DungBeetleEntity ? (p.combatRole()==1? 8 : 4) : p.combatRole()==3? 6 : 3);
+                            target.damage(mob.getDamageSources().mobAttack(mob),mob instanceof DungBeetleEntity ? (p.combatRole()==1? 14 : 7) : p.combatRole()==3? 6 : 3);
                             c.cooldown = 20; 
                         }
                     }
                 }else mob.getNavigation().stop();
+                
+                if(mob.isTouchingWater() || mob.isInLava()) {
+                    if (mob instanceof DungBeetleEntity) {
+                        if (target == null || target.getY() >= mob.getY() - 0.5) mob.getJumpControl().setActive();
+                    }
+                }
             }
-            if(mob instanceof DungBeetleEntity && mob.age%80==0)mob.heal(1);
+            if(mob instanceof DungBeetleEntity && mob.age%30==0)mob.heal(4);
         }
         mob.getNavigation().tick();mob.getMoveControl().tick();mob.getLookControl().tick();mob.getJumpControl().tick();return true;
     }
 }
-
-
-
-
-
-
-
-
-
-
