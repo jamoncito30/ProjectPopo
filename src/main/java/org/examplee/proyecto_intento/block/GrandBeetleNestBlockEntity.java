@@ -352,8 +352,6 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
             
             // Re-founding small nests if full
             if (complete && world.getGameRules().getBoolean(net.minecraft.world.GameRules.DO_MOB_GRIEFING) && nest.occupants.size() >= POPULATION_CAPACITY && nest.getFoodCount() >= 10 && world.getTime() % 100 == 0) {
-                // We should let a beetle out or trigger small nest placement.
-                // Wait, logic says "If grand nest is full and has food, use food to place small nests nearby."
                 nest.tryFoundSmallNest(server);
             }
         }

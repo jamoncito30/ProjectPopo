@@ -11,6 +11,7 @@ import org.examplee.proyecto_intento.entity.*;
 
 public final class InvasionGameTests implements FabricGameTest {
     private GrandBeetleNestBlockEntity nest(TestContext c) {
+        c.getWorld().getServer().setDifficulty(net.minecraft.world.Difficulty.NORMAL, true);
         for(int x=0;x<32;x++)for(int z=0;z<32;z++)c.setBlockState(x,1,z,Blocks.STONE);
         var p=c.getAbsolutePos(new BlockPos(16,2,16));
         c.getWorld().setBlockState(p,ModBlocks.GRAND_BEETLE_NEST_CONTROLLER.getDefaultState().with(GrandBeetleNestPieceBlock.STAGE,4));

@@ -35,21 +35,35 @@ def design(stage):
         box(lo+8,y,hi-8,hi-8,y+4,hi,tex)
         if y < 28:
             gap = 12 if y < 20 else 8
-            box(lo+8,y,lo,40-gap,y+4,lo+8,tex)
-            box(40+gap,y,lo,hi-8,y+4,lo+8,tex)
+            # In stages 1-3, leave an open entrance corridor, but in stage 4 make it solid structure
+            if stage < 4:
+                box(lo+8,y,lo,40-gap,y+4,lo+8,tex)
+                box(40+gap,y,lo,hi-8,y+4,lo+8,tex)
+            else:
+                box(lo+8,y,lo,hi-8,y+4,lo+8,tex)
         elif stage != 3 or y < 40:
             box(lo+8,y,lo,hi-8,y+4,lo+8,tex)
+            
     if stage >= 2:
         # Projecting arch: beetle-sized entrance, visible from the northern face.
-        box(24,6,0,28,24,12,'dry'); box(52,6,0,56,24,12,'dry')
-        box(28,24,0,32,28,12,'dry'); box(48,24,0,52,28,12,'dry')
-        box(32,28,0,48,32,12,'dry')
+        box(24,6,0,28,24,12,'dry')
+        box(52,6,0,56,24,12,'dry')
+        if stage < 4:
+            box(28,24,0,32,28,12,'dry')
+            box(48,24,0,52,28,12,'dry')
+            box(32,28,0,48,32,12,'dry')
+        else:
+            box(28,24,0,52,28,12,'dry')
         for x,z in [(4,16),(68,16),(4,52),(68,52)]:
             box(x,4,z,x+8,20,z+12,'dry')
+            
     if stage == 4:
+        # Solid core instead of hollow space
+        box(16,4,12,64,32,68,'wet')
+        box(20,32,16,60,48,64,'dry')
+        box(24,48,20,56,60,60,'wet')
         # Closed exterior: entry is a symbolic dark inset, not an open corridor.
         box(28,6,4,52,24,12,'entrance')
-        box(32,24,4,48,28,12,'entrance')
         box(24,64,24,56,68,56,'dry')
         box(28,68,28,52,72,52)
         # Crown ventilation opening, deliberately hollow.
