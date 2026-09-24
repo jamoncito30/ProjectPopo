@@ -519,3 +519,5 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
         for (int i = 0; i < list.size(); i++) occupants.add(list.getCompound(i).copy());
     }
 }
+
+

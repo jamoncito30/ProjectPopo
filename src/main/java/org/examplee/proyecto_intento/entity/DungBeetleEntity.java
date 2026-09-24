@@ -393,7 +393,12 @@ private final class CollectGoal extends Goal {
             workingTicks++;
             if (getCarrying() > 0) {
                 if (deposit == null) return;
-                if (--repath <= 0) { getNavigation().startMovingTo(deposit.getX() + 0.5, deposit.getY(), deposit.getZ() + 0.5, 0.85); repath = 20; }
+                if (--repath <= 0) {
+                    if (!getNavigation().startMovingTo(deposit.getX() + 0.5, deposit.getY(), deposit.getZ() + 0.5, 0.85)) {
+                        getMoveControl().moveTo(deposit.getX() + 0.5, deposit.getY(), deposit.getZ() + 0.5, 0.85);
+                    }
+                    repath = 20;
+                }
                 boolean isGrand = getWorld().getBlockState(deposit).isOf(ModBlocks.GRAND_BEETLE_NEST_CONTROLLER) || getWorld().getBlockState(deposit).isOf(ModBlocks.GRAND_BEETLE_NEST_PIECE);
                 if (squaredDistanceTo(deposit.toCenterPos()) < (isGrand ? 16.0 : 4.0) && canSeeNest(deposit)) {
                     BlockState old = getWorld().getBlockState(deposit);
@@ -559,6 +564,11 @@ private final class CollectGoal extends Goal {
         return super.isInvulnerableTo(source);
     }
 }
+
+
+
+
+
 
 
 
