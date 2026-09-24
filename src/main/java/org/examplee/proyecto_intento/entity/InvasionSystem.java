@@ -56,7 +56,7 @@ public final class InvasionSystem {
     }
     public static boolean start(ServerWorld w,GrandBeetleNestBlockEntity n) {
         if(active(n) || !n.isStructureIntact() || w.getDifficulty()==net.minecraft.world.Difficulty.PEACEFUL)return false;
-        for(var other:ACTIVE.keySet())if(other.getWorld()==w && active(other) && other.getPos().isWithinDistance(n.getPos(),RADIUS*2+2))return false;
+        // Multihouse restriction removed
         var beetles=w.getEntitiesByClass(DungBeetleEntity.class,new Box(n.getPos()).expand(20),b->b.isAlive() && !b.isBaby() && b.combat().event==null && n.getPos().equals(b.getNestPos()));
         boolean adult=n.getOccupants().stream().anyMatch(r->r.getCompound("Entity").getInt("Age")>=0);
         if(beetles.isEmpty() && !adult)return false;
