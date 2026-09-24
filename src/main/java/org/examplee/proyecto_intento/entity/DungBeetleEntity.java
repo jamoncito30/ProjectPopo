@@ -559,3 +559,4 @@ private final class CollectGoal extends Goal {
         return super.isInvulnerableTo(source);
     }
 }
+
