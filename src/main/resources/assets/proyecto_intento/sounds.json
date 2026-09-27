@@ -46,5 +46,21 @@
                                         }
                                     ],
                          "subtitle":  "subtitles.proyecto_intento.beetle"
-                     }
+                     },
+    "grand_nest_start": {
+        "sounds": [
+            {
+                "name": "proyecto_intento:grand_nest_start",
+                "stream": true
+            }
+        ]
+    },
+    "raid_final_theme": {
+        "sounds": [
+            {
+                "name": "proyecto_intento:raid_final_theme",
+                "stream": true
+            }
+        ]
+    }
 }

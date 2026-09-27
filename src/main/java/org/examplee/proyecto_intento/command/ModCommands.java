@@ -97,6 +97,19 @@ public class ModCommands {
                 })
             );
 
+            dispatcher.register(CommandManager.literal("force_beetle_celebration")
+                .requires(source -> source.hasPermissionLevel(2))
+                .executes(context -> {
+                    ServerCommandSource source=context.getSource();
+                    boolean started=org.examplee.proyecto_intento.entity.InvasionSystem.forceCelebration(
+                        source.getWorld(),BlockPos.ofFloored(source.getPosition()));
+                    source.sendMessage(Text.literal(started
+                        ? "Celebración de escarabajos iniciada en la colonia más cercana."
+                        : "No se encontró un Gran Nido completo dentro de 128 bloques."));
+                    return started?1:0;
+                })
+            );
+
             dispatcher.register(CommandManager.literal("kill_invasion_slimes")
                 .requires(source -> source.hasPermissionLevel(2))
                 .executes(context -> {

@@ -39,6 +39,11 @@ public final class BeetleNestGameTests implements FabricGameTest {
         c.assertTrue(nest.tryEnter(beetle), "Beetle must enter completed home");
         return beetle;
     }
+    private static void moveEastFor(TestContext c, DungBeetleEntity beetle, double targetX, int ticks, Runnable finished) {
+        if (ticks <= 0) { finished.run(); return; }
+        beetle.getMoveControl().moveTo(targetX, beetle.getY(), beetle.getZ(), 1.0);
+        c.waitAndRun(1, () -> moveEastFor(c, beetle, targetX, ticks - 1, finished));
+    }
     @GameTest(templateName = ARENA)
     public void fiveStagesAndFoodConserveMaterial(TestContext c) {
         BeetleNestBlockEntity nest = nest(c, 1);
@@ -106,6 +111,57 @@ public final class BeetleNestGameTests implements FabricGameTest {
             c.assertEquals(c.getEntities(ModEntities.DUNG_BEETLE).size(), 2, "Breaking evacuates both residents even when surrounded");
             c.assertTrue(c.getWorld().getEntity(first.getUuid()) instanceof DungBeetleEntity, "First UUID preserved");
             c.assertTrue(c.getWorld().getEntity(second.getUuid()) instanceof DungBeetleEntity, "Second UUID preserved");
+            c.complete();
+        });
+    }
+    @GameTest(templateName = ARENA, tickLimit = 100)
+    public void beetlesClimbAcrossClusteredSmallHouses(TestContext c) {
+        floor(c);
+        for (int z = 7; z <= 9; z++) {
+            c.setBlockState(10, 2, z, ModBlocks.BEETLE_NEST.getDefaultState().with(BeetleNestBlock.STAGE, 5));
+        }
+        BlockPos firstHouse = c.getAbsolutePos(new BlockPos(10, 2, 8));
+        DungBeetleEntity beetle = c.spawnEntity(ModEntities.DUNG_BEETLE, 8.5F, 2, 8.5F);
+        beetle.clearGoals(goal -> true);
+        moveEastFor(c, beetle, firstHouse.getX() + 2.5, 22, () -> {
+            c.assertTrue(beetle.getY() > firstHouse.getY() + 0.45, "Contact with a small house lifts the beetle toward its roof; beetle="
+                    + beetle.getX() + "," + beetle.getY() + "," + beetle.getZ());
+            moveEastFor(c, beetle, firstHouse.getX() + 2.5, 20, () -> {
+                c.assertTrue(beetle.getX() > firstHouse.getX() + 1.3, "Beetle crosses the cluster over the house roofs");
+                c.complete();
+            });
+        });
+    }
+    @GameTest(templateName = ARENA, tickLimit = 60)
+    public void beetlesDoNotClimbOrdinaryWalls(TestContext c) {
+        floor(c);
+        c.setBlockState(10, 2, 8, Blocks.STONE);
+        BlockPos wall = c.getAbsolutePos(new BlockPos(10, 2, 8));
+        DungBeetleEntity beetle = c.spawnEntity(ModEntities.DUNG_BEETLE, 8.5F, 2, 8.5F);
+        beetle.clearGoals(goal -> true);
+        moveEastFor(c, beetle, wall.getX() + 2.5, 16, () -> {
+            c.assertFalse(beetle.isClimbing(), "Stone walls do not activate nest climbing");
+            c.assertTrue(beetle.getY() < wall.getY() + 0.25, "Beetle does not ascend an ordinary wall");
+            c.complete();
+        });
+    }
+    @GameTest(templateName = ARENA, tickLimit = 500)
+    public void beetlesEnterAndLeaveThroughTheRoof(TestContext c) {
+        BeetleNestBlockEntity nest = nest(c, 5);
+        for (var direction : new net.minecraft.util.math.Direction[]{net.minecraft.util.math.Direction.NORTH,
+                net.minecraft.util.math.Direction.EAST, net.minecraft.util.math.Direction.SOUTH, net.minecraft.util.math.Direction.WEST}) {
+            c.setBlockState(HOME.offset(direction), Blocks.STONE);
+        }
+        DungBeetleEntity beetle = c.spawnEntity(ModEntities.DUNG_BEETLE, 8.5F, 2.8F, 8.5F);
+        beetle.setAiDisabled(true);
+        var uuid = beetle.getUuid();
+        c.assertTrue(nest.tryEnter(beetle), "Beetle standing above the house can enter");
+        c.assertEquals(nest.getOccupantCount(), 1, "Roof entry stores one resident");
+        c.waitAndRun(420, () -> {
+            var emerged = c.getWorld().getEntity(uuid);
+            c.assertTrue(emerged instanceof DungBeetleEntity, "Resident exits even though all side exits are blocked");
+            c.assertEquals(nest.getOccupantCount(), 0, "Roof exit removes the resident from storage");
+            c.assertTrue(emerged.getY() > c.getAbsolutePos(HOME).getY() + 0.70, "Resident emerges above the roof");
             c.complete();
         });
     }

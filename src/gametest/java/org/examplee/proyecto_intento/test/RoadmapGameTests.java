@@ -81,4 +81,42 @@ public final class RoadmapGameTests implements FabricGameTest {
         c.assertTrue(copy.isTrader(),"Merchant visual flag survives NBT save/load");
         c.complete();
     }
+
+    @GameTest(templateName="popocraft_tests:arena")
+    public void traderStagesDiscountEnchantmentsAndRestockPersist(TestContext c) {
+        var beetle=ModEntities.DUNG_BEETLE.create(c.getWorld());
+        beetle.setTrader(true);beetle.setDiscountedTrader(true);
+        var offers=beetle.getOffers();
+        c.assertEquals(offers.size(),2,"Stage one keeps only the two poop and emerald offers");
+        c.assertTrue(offers.stream().noneMatch(o->o.getSellItem().isOf(ModItems.ESTIERCOL)),"Fertilizer is no longer sold in stage one");
+        var poopOffer=offers.stream().filter(o->o.getSellItem().isOf(Items.EMERALD)).findFirst().orElseThrow();
+        c.assertEquals(poopOffer.getDisplayedFirstBuyItem().getCount(),8,"Raid merchant gives the 25 percent discount on the ten-poop trade");
+
+        var emeraldOffer=offers.stream().filter(o->o.getSellItem().isOf(ModItems.POPO)).findFirst().orElseThrow();
+        for(int i=0;i<5;i++) beetle.trade(emeraldOffer);
+        c.assertEquals(beetle.getExperience(),10,"Ten trade XP unlocks stage two");
+        c.assertEquals(beetle.getOffers().size(),7,"Stage two adds five hostile-drop offers");
+        var dropOffers=beetle.getOffers().stream().filter(o->o.getMerchantExperience()==5).toList();
+        for(int i=0;i<12;i++) beetle.trade(dropOffers.get(i%dropOffers.size()));
+        c.assertEquals(beetle.getExperience(),70,"Seventy cumulative trade XP unlocks stage three");
+        c.assertEquals(beetle.getOffers().size(),12,"Stage three adds five equipment offers");
+        var gearOffers=beetle.getOffers().stream().filter(o->o.getMerchantExperience()==15).toList();
+        for(var offer:gearOffers) {
+            var enchantments=offer.getSellItem().get(net.minecraft.component.DataComponentTypes.ENCHANTMENTS);
+            c.assertTrue(enchantments.getEnchantments().size()<=3,"Equipment has no more than three enchantments");
+            for(var enchantment:enchantments.getEnchantments())
+                c.assertTrue(enchantments.getLevel(enchantment)<=10,"Enchantment levels never exceed ten");
+        }
+
+        var stock=gearOffers.get(0);
+        stock.use();beetle.restockAtGrandNest();c.assertEquals(stock.getUses(),0,"Grand-nest return replenishes stock");
+        stock.use();beetle.restockAtGrandNest();stock.use();beetle.restockAtGrandNest();
+        c.assertEquals(stock.getUses(),1,"At most two restocks happen per Minecraft day");
+        var saved=new net.minecraft.nbt.NbtCompound();beetle.writeCustomDataToNbt(saved);
+        var copy=ModEntities.DUNG_BEETLE.create(c.getWorld());copy.readCustomDataFromNbt(saved);
+        c.assertEquals(copy.getExperience(),70,"Trade progress persists");
+        c.assertTrue(copy.isDiscountedTrader(),"Raid discount persists");
+        c.assertEquals(copy.getOffers().size(),12,"Offer catalogue and stock persist");
+        c.complete();
+    }
 }

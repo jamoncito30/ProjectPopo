@@ -6,6 +6,7 @@ import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
@@ -67,6 +68,142 @@ public final class GrandNestGameTests implements FabricGameTest {
         c.assertTrue(GrandBeetleNestBlockEntity.isValidSite(c.getWorld(),first.add(15,0,0)),"Ten empty blocks between edges is valid");
         c.getWorld().setBlockState(first.add(15,-1,0),Blocks.AIR.getDefaultState());
         c.assertFalse(GrandBeetleNestBlockEntity.isValidSite(c.getWorld(),first.add(15,0,0)),"Hole in foundation rejects terrain");c.complete();
+    }
+    @GameTest(templateName="popocraft_tests:arena")
+    public void largeColonyAssignsFourBuildersToExpand(TestContext c) {
+        BlockPos absoluteOrigin=c.getAbsolutePos(new BlockPos(6,3,6));
+        for(int x=0;x<32;x++)for(int z=0;z<32;z++)c.getWorld().setBlockState(c.getAbsolutePos(new BlockPos(x,2,z)),Blocks.STONE.getDefaultState());
+        var nest=place(c,4);nest.setOrigin(absoluteOrigin);nest.updateStructure(4);
+        java.util.List<org.examplee.proyecto_intento.entity.DungBeetleEntity> beetles=new java.util.ArrayList<>();
+        for(int i=0;i<19;i++) {
+            var beetle=org.examplee.proyecto_intento.entity.ModEntities.DUNG_BEETLE.create(c.getWorld());
+            beetle.setNest(nest.getPos());beetle.setPosition(absoluteOrigin.getX()+10+(i%5),absoluteOrigin.getY(),absoluteOrigin.getZ()+10+(i/5));
+            c.getWorld().spawnEntity(beetle);beetles.add(beetle);
+        }
+        c.assertFalse(nest.tryStartGrandNestExpansion(c.getWorld()),"Nineteen assigned beetles do not trigger a new grand nest");
+        var twentieth=org.examplee.proyecto_intento.entity.ModEntities.DUNG_BEETLE.create(c.getWorld());
+        twentieth.setNest(nest.getPos());twentieth.setPosition(absoluteOrigin.getX()+14,absoluteOrigin.getY(),absoluteOrigin.getZ()+14);
+        c.getWorld().spawnEntity(twentieth);beetles.add(twentieth);
+        c.assertTrue(nest.tryStartGrandNestExpansion(c.getWorld()),"Twenty assigned beetles trigger a repeatable expansion");
+        c.assertTrue(nest.getExpansionTarget()!=null,"The source nest persists the new construction target");
+        c.assertEquals((int)beetles.stream().filter(org.examplee.proyecto_intento.entity.DungBeetleEntity::isAssignedToGrandNestConstruction).count(),4,"Exactly four adults are randomly assigned as builders");
+        c.assertTrue(c.getWorld().getBlockEntity(nest.getExpansionTarget()) instanceof GrandBeetleNestBlockEntity,"A new large nest starts construction at a validated site");
+        c.complete();
+    }
+    @GameTest(templateName="popocraft_tests:arena")
+    public void unassignedEmptySmallHouseReturnsAllMaterialsToGrandNest(TestContext c) {
+        var main=place(c,4);
+        BlockPos smallPos=c.getAbsolutePos(new BlockPos(12,3,12));
+        c.getWorld().setBlockState(smallPos,ModBlocks.BEETLE_NEST.getDefaultState().with(BeetleNestBlock.STAGE,5));
+        var small=(BeetleNestBlockEntity)c.getWorld().getBlockEntity(smallPos);
+        var collector=org.examplee.proyecto_intento.entity.ModEntities.DUNG_BEETLE.create(c.getWorld());
+        collector.setNest(main.getPos());collector.setPosition(smallPos.toCenterPos());c.getWorld().spawnEntity(collector);
+        c.assertTrue(collector.isUnassignedEmptyHouse(smallPos,small),"Empty house with no assigned beetle can be reclaimed");
+        java.util.UUID competingCollector=java.util.UUID.randomUUID();
+        c.assertTrue(small.tryClaimForGrandNest(collector.getUuid()),"First collector reserves the house before travelling to it");
+        c.assertFalse(small.tryClaimForGrandNest(competingCollector),"A competing collector cannot target the same house");
+        collector.setNest(smallPos);
+        c.assertFalse(collector.isUnassignedEmptyHouse(smallPos,small),"A house assigned to a live beetle is protected");
+        small.releaseGrandNestClaim(collector.getUuid());
+        c.assertTrue(small.tryClaimForGrandNest(competingCollector),"A released reservation can be claimed again");
+        small.releaseGrandNestClaim(competingCollector);
+        collector.setNest(main.getPos());
+        for(int i=0;i<3;i++)c.assertTrue(small.addMaterial(),"Small-house food is stored");
+        int recovered=0;
+        for(int i=0;i<3;i++) {
+            c.assertTrue(small.takeMaterialForGrandNest(),"Stored food is recovered once");
+            recovered+=main.deposit(new ItemStack(ModItems.POPO,1));
+        }
+        for(int i=0;i<5;i++) {
+            c.assertTrue(small.takeMaterialForGrandNest(),"Each empty construction layer is reclaimed once");
+            recovered+=main.deposit(new ItemStack(ModItems.POPO,1));
+        }
+        c.assertTrue(c.getWorld().getBlockState(smallPos).isAir(),"Last recovered layer removes the abandoned house");
+        c.assertEquals(recovered,8,"All stored food and five construction layers reach the grand-nest store");
+        c.assertEquals(main.getFoodCount(),8,"Grand nest retains the full recovered amount");
+        c.complete();
+    }
+    @GameTest(templateName="popocraft_tests:arena")
+    public void fullColonyReusesVacantHouseBeforeFoundingAnother(TestContext c) {
+        var main=place(c,4);
+        BlockPos center=main.getPos();
+        fillSmallHouseGround(c,center);
+        BlockPos vacant=center.add(5,0,0);
+        c.getWorld().setBlockState(vacant,ModBlocks.BEETLE_NEST.getDefaultState().with(BeetleNestBlock.STAGE,5));
+        main.deposit(new ItemStack(ModItems.POPO,10));
+        var releasedId=addSerializedResidents(c,main,30,null);
+
+        c.assertTrue(main.tryFoundSmallNest(c.getWorld()),"A full colony uses its existing vacant house");
+        var released=c.getWorld().getEntity(releasedId);
+        c.assertTrue(released instanceof org.examplee.proyecto_intento.entity.DungBeetleEntity
+                && vacant.equals(((org.examplee.proyecto_intento.entity.DungBeetleEntity)released).getNestPos()),
+                "One stored resident is assigned to the existing vacant house");
+        c.assertEquals(main.getOccupantCount(),29,"The assigned resident leaves the grand nest exactly once");
+        c.assertEquals(main.getFoodCount(),10,"Reusing an existing house does not charge construction food");
+        c.assertEquals(countSmallHouses(c,center),1,"A full colony does not create a replacement beside an empty house");
+        c.complete();
+    }
+    @GameTest(templateName="popocraft_tests:arena")
+    public void failedResidentReleaseDoesNotLeaveOrphanHouseOrSpendFood(TestContext c) {
+        var main=place(c,4);
+        BlockPos center=main.getPos();
+        fillSmallHouseGround(c,center);
+        main.deposit(new ItemStack(ModItems.POPO,10));
+        var alreadyLoaded=org.examplee.proyecto_intento.entity.ModEntities.DUNG_BEETLE.create(c.getWorld());
+        alreadyLoaded.setAiDisabled(true);
+        alreadyLoaded.setPosition(center.add(-4,0,-4).toCenterPos());
+        c.getWorld().spawnEntity(alreadyLoaded);
+        addSerializedResidents(c,main,30,alreadyLoaded);
+
+        c.assertFalse(main.tryFoundSmallNest(c.getWorld()),"Residents whose UUIDs are already active cannot be released again");
+        c.assertEquals(countSmallHouses(c,center),0,"A resident that cannot be released does not leave a newly founded empty house");
+        c.assertEquals(main.getOccupantCount(),30,"Failed release preserves all serialized residents");
+        c.assertEquals(main.getFoodCount(),10,"Failed release preserves the founding cost");
+        c.complete();
+    }
+    @GameTest(templateName="popocraft_tests:arena")
+    public void fullColonyFoundsAndAssignsHouseWhenNoVacancyExists(TestContext c) {
+        var main=place(c,4);
+        BlockPos center=main.getPos();
+        fillSmallHouseGround(c,center);
+        main.deposit(new ItemStack(ModItems.POPO,10));
+        var releasedId=addSerializedResidents(c,main,30,null);
+
+        c.assertTrue(main.tryFoundSmallNest(c.getWorld()),"A spare resident founds a new house when no vacant house exists");
+        c.assertEquals(main.getOccupantCount(),29,"The newly housed resident leaves the grand nest exactly once");
+        c.assertEquals(main.getFoodCount(),4,"Six food are charged only after the resident is housed");
+        c.assertEquals(countSmallHouses(c,center),1,"Exactly one new small house is founded");
+        var released=c.getWorld().getEntity(releasedId);
+        c.assertTrue(released instanceof org.examplee.proyecto_intento.entity.DungBeetleEntity
+                && ((org.examplee.proyecto_intento.entity.DungBeetleEntity)released).getNestPos()!=null
+                && c.getWorld().getBlockState(((org.examplee.proyecto_intento.entity.DungBeetleEntity)released).getNestPos()).isOf(ModBlocks.BEETLE_NEST),
+                "The new house is assigned to its released resident");
+        c.complete();
+    }
+    private static void fillSmallHouseGround(TestContext c,BlockPos center) {
+        for(int x=-11;x<=11;x++)for(int z=-11;z<=11;z++)
+            c.getWorld().setBlockState(center.add(x,-1,z),Blocks.STONE.getDefaultState());
+    }
+    private static java.util.UUID addSerializedResidents(TestContext c,GrandBeetleNestBlockEntity nest,int count,
+            org.examplee.proyecto_intento.entity.DungBeetleEntity sharedEntity) {
+        java.util.UUID lastId=null;
+        for(int i=0;i<count;i++) {
+            var beetle=sharedEntity==null?org.examplee.proyecto_intento.entity.ModEntities.DUNG_BEETLE.create(c.getWorld()):sharedEntity;
+            NbtCompound data=new NbtCompound();
+            beetle.saveNbt(data);
+            lastId=data.getUuid("UUID");
+            NbtCompound resident=new NbtCompound();
+            resident.put("Entity",data);
+            resident.putInt("TicksInside",0);
+            nest.getOccupants().add(resident);
+        }
+        return lastId;
+    }
+    private static int countSmallHouses(TestContext c,BlockPos center) {
+        int count=0;
+        for(int x=-10;x<=10;x++)for(int y=-2;y<=2;y++)for(int z=-10;z<=10;z++)
+            if(c.getWorld().getBlockState(center.add(x,y,z)).isOf(ModBlocks.BEETLE_NEST))count++;
+        return count;
     }
     private static final BlockPos POS = new BlockPos(8,3,8);
     private static GrandBeetleNestBlockEntity place(TestContext c, int stage) {

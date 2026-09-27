@@ -12,6 +12,7 @@ public final class ModSounds {
     public static final SoundEvent BEETLE_STEP = register("beetle_step");
     public static final SoundEvent BEETLE_ROLL = register("beetle_roll");
     public static final SoundEvent GRAND_NEST_START = register("grand_nest_start");
+    public static final SoundEvent RAID_FINAL_THEME = register("raid_final_theme");
     private static SoundEvent register(String name) {
         Identifier id = Identifier.of("proyecto_intento", name);
         return Registry.register(Registries.SOUND_EVENT, id, SoundEvent.of(id));

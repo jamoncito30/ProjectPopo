@@ -3,6 +3,8 @@ package org.examplee.proyecto_intento.test;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.entity.projectile.FireworkRocketEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.test.*;
 import net.minecraft.util.math.*;
@@ -71,5 +73,125 @@ public final class InvasionGameTests implements FabricGameTest {
         for(var block:new net.minecraft.block.Block[]{ModBlocks.WET_POPO,ModBlocks.SEWAGE}) {
             var state=block.getDefaultState();c.assertFalse(state.getCollisionShape(c.getWorld(),b.getBlockPos(),net.minecraft.block.ShapeContext.of(b)).isEmpty(),"Organic terrain supports beetle");
         }c.complete();
+    }
+    @GameTest(templateName="popocraft_tests:arena",tickLimit=280)
+    public void victorySpawnsExactlyOneDiscountedTrader(TestContext c) {
+        var n=nest(c);beetle(c,n,2);
+        c.assertTrue(InvasionSystem.start(c.getWorld(),n),"Colony starts the raid");
+        InvasionSystem.finish(c.getWorld(),n,true);
+        c.waitAndRun(2,()->{
+            var traders=c.getWorld().getEntitiesByClass(DungBeetleEntity.class,new net.minecraft.util.math.Box(n.getPos()).expand(16),DungBeetleEntity::isTrader);
+            c.assertEquals(traders.size(),1,"Winning raid guarantees one trader");
+            c.assertTrue(traders.get(0).isDiscountedTrader(),"Raid reward receives its persistent discount");
+            var ids=new java.util.HashSet<java.util.UUID>();
+            var shapes=new java.util.HashSet<String>();
+            var palettes=new java.util.HashSet<String>();
+            observeCelebration(c,new net.minecraft.util.math.Box(n.getPos()).expand(40),ids,shapes,palettes,250,()->{
+                c.assertEquals(ids.size(),24,"Victory launches all twenty-four rockets in the timed celebration");
+                c.assertEquals(shapes.size(),5,"The show cycles through all five vanilla explosion shapes");
+                c.assertTrue(palettes.size()>=6,"Firework colors visibly vary through the show");
+                c.complete();
+            });
+        });
+    }
+    @GameTest(templateName="popocraft_tests:arena",tickLimit=280)
+    public void forceCelebrationCommandUsesNearestColony(TestContext c) {
+        var n=nest(c);
+        var manager=c.getWorld().getServer().getCommandManager();
+        var source=c.getWorld().getServer().getCommandSource().withWorld(c.getWorld()).withPosition(n.getPos().toCenterPos()).withLevel(4);
+        manager.executeWithPrefix(source,"force_beetle_celebration");
+        c.assertTrue(c.getWorld().getEntitiesByClass(FireworkRocketEntity.class,new net.minecraft.util.math.Box(n.getPos()).expand(40),e->true).size()==1,"Administrator command launches the first rocket at the nearby colony");
+        c.assertFalse(InvasionSystem.active(n),"Forcing a celebration does not start or finish a raid");
+        c.assertTrue(c.getWorld().getEntitiesByClass(DungBeetleEntity.class,new net.minecraft.util.math.Box(n.getPos()).expand(16),DungBeetleEntity::isTrader).isEmpty(),"Manual celebration grants no trader");
+        var ids=new java.util.HashSet<java.util.UUID>();
+        var shapes=new java.util.HashSet<String>();
+        var palettes=new java.util.HashSet<String>();
+        observeCelebration(c,new net.minecraft.util.math.Box(n.getPos()).expand(40),ids,shapes,palettes,250,()->{
+            c.assertEquals(ids.size(),24,"Manual command runs the complete twenty-four-rocket show");
+            c.complete();
+        });
+    }
+    @GameTest(templateName="popocraft_tests:arena")
+    public void forceCelebrationCommandRequiresAdminAndHandlesNoColony(TestContext c) {
+        var manager=c.getWorld().getServer().getCommandManager();
+        var farPosition=new net.minecraft.util.math.Vec3d(100000,0,100000);
+        var admin=c.getWorld().getServer().getCommandSource().withWorld(c.getWorld()).withPosition(farPosition).withLevel(4);
+        c.assertFalse(InvasionSystem.forceCelebration(c.getWorld(),BlockPos.ofFloored(farPosition)),"No nearby colony is found");
+        manager.executeWithPrefix(admin,"force_beetle_celebration");
+        var command=manager.getDispatcher().getRoot().getChild("force_beetle_celebration");
+        c.assertTrue(command.canUse(admin),"Operator permission level can run the command");
+        c.assertFalse(command.canUse(admin.withLevel(0)),"Players below permission level two cannot run the command");
+        c.complete();
+    }
+    @GameTest(templateName="popocraft_tests:arena")
+    public void defeatDoesNotSpawnRewardTrader(TestContext c) {
+        var n=nest(c);beetle(c,n,2);
+        c.assertTrue(InvasionSystem.start(c.getWorld(),n),"Colony starts the raid");
+        InvasionSystem.finish(c.getWorld(),n,false);
+        c.assertTrue(c.getWorld().getEntitiesByClass(DungBeetleEntity.class,new net.minecraft.util.math.Box(n.getPos()).expand(16),DungBeetleEntity::isTrader).isEmpty(),"Losing raid grants no trader");
+        c.assertTrue(c.getWorld().getEntitiesByClass(net.minecraft.entity.projectile.FireworkRocketEntity.class,new net.minecraft.util.math.Box(n.getPos()).expand(12),rocket->true).isEmpty(),"A defeat has no fireworks");
+        c.complete();
+    }
+
+    @GameTest(templateName="popocraft_tests:arena")
+    public void abortingRaidDoesNotCelebrate(TestContext c) {
+        var n=nest(c);beetle(c,n,2);
+        c.assertTrue(InvasionSystem.start(c.getWorld(),n),"Colony starts the raid");
+        c.assertTrue(InvasionSystem.stopNearestInvasion(c.getWorld(),n.getPos()),"Administrative stop aborts the raid");
+        c.assertTrue(c.getWorld().getEntitiesByClass(net.minecraft.entity.projectile.FireworkRocketEntity.class,new net.minecraft.util.math.Box(n.getPos()).expand(12),rocket->true).isEmpty(),"An aborted raid has no fireworks");
+        c.complete();
+    }
+
+    @GameTest(templateName="popocraft_tests:arena",tickLimit=300)
+    public void celebrationFireworksDoNotDamageNearbyEntities(TestContext c) {
+        var n=nest(c);beetle(c,n,2);
+        var cow=c.spawnEntity(net.minecraft.entity.EntityType.COW,16,2,16);cow.setNoGravity(true);
+        cow.refreshPositionAndAngles(n.getPos().getX()+.5,n.getOrigin().getY()+8.0,n.getPos().getZ()+.5,0,0);
+        float health=cow.getHealth();
+        c.assertTrue(InvasionSystem.start(c.getWorld(),n),"Colony starts the raid");
+        InvasionSystem.finish(c.getWorld(),n,true);
+        c.waitAndRun(270,()->{
+            c.assertEquals(cow.getHealth(),health,"Ownerless celebration fireworks do not damage nearby mobs");
+            c.complete();
+        });
+    }
+
+    private void observeCelebration(TestContext c,net.minecraft.util.math.Box area,java.util.Set<java.util.UUID> ids,
+                                   java.util.Set<String> shapes,java.util.Set<String> palettes,int ticks,Runnable finished) {
+        for(FireworkRocketEntity rocket:c.getWorld().getEntitiesByClass(FireworkRocketEntity.class,area,e->true)) {
+            if(ids.add(rocket.getUuid())) {
+                var component=rocket.getStack().get(DataComponentTypes.FIREWORKS);
+                if(component!=null && !component.explosions().isEmpty()) {
+                    var explosion=component.explosions().get(0);
+                    shapes.add(explosion.shape().asString());
+                    palettes.add(explosion.colors().toString()+"/"+explosion.fadeColors());
+                }
+            }
+        }
+        if(ticks<=1)finished.run();
+        else c.waitAndRun(1,()->observeCelebration(c,area,ids,shapes,palettes,ticks-1,finished));
+    }
+
+    @GameTest(templateName="popocraft_tests:arena",batchId="invasion_music")
+    public void raidThemeUsesBossBarAudienceRadius(TestContext c) {
+        var n=nest(c);var nests=java.util.List.of(n);var center=n.getPos().toCenterPos();
+        c.assertTrue(InvasionSystem.isRaidMusicWitnessPosition(center,nests),"Player at the raid center is a witness");
+        c.assertTrue(InvasionSystem.isRaidMusicWitnessPosition(center.add(20,0,0),nests),"Player inside the boss-bar radius hears the track");
+        c.assertFalse(InvasionSystem.isRaidMusicWitnessPosition(center.add(40,0,0),nests),"Player outside the boss-bar radius is excluded");
+        c.complete();
+    }
+
+    @GameTest(templateName="popocraft_tests:arena",batchId="invasion_music")
+    public void raidThemeLoopIntervalMatchesOggDuration(TestContext c) {
+        c.assertEquals(InvasionSystem.RAID_MUSIC_DURATION_TICKS,6246L,"312.28-second soundtrack repeats after 6,246 ticks");
+        c.complete();
+    }
+
+    @GameTest(templateName="popocraft_tests:arena",batchId="invasion_music")
+    public void failedRaidDoesNotCreateMusicSession(TestContext c) {
+        var n=nest(c);
+        c.assertFalse(InvasionSystem.start(c.getWorld(),n),"An empty colony cannot start a raid");
+        c.assertFalse(InvasionSystem.active(n),"A failed start does not create a raid or soundtrack session");
+        c.complete();
     }
 }

@@ -7,13 +7,24 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.boss.*;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.projectile.FireworkRocketEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.FireworkExplosionComponent;
+import net.minecraft.component.type.FireworksComponent;
+import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import it.unimi.dsi.fastutil.ints.IntList;
 import org.examplee.proyecto_intento.block.GrandBeetleNestBlockEntity;
 import org.examplee.proyecto_intento.block.ModBlocks;
 import org.examplee.proyecto_intento.mixin.SlimeMoveControlAccessor;
@@ -21,13 +32,50 @@ import org.examplee.proyecto_intento.mixin.SlimeMoveControlAccessor;
 /** Server-authoritative encounter; durable state lives in the nest, not this lookup cache. */
 public final class InvasionSystem {
     public static final int RADIUS=24;
+    /** The user's final battle OGG is 312.28 seconds at 20 ticks/second. */
+    public static final long RAID_MUSIC_DURATION_TICKS=6246L;
+    private static final Identifier RAID_MUSIC_ID=Identifier.of("proyecto_intento","raid_final_theme");
     private static final Map<GrandBeetleNestBlockEntity,ServerBossBar> ACTIVE=new WeakHashMap<>();
+    /** Event UUID -> listeners and their next restart time, measured in world ticks. */
+    private static final Map<UUID,Map<UUID,Long>> RAID_MUSIC_LISTENERS=new HashMap<>();
+    private record CelebrationRocket(ItemStack stack,double x,double y,double z) { }
+    private static final class VictoryCelebration {
+        final RegistryKey<World> dimension;
+        final List<CelebrationRocket> rockets;
+        int nextRocket=1;
+        int nextTick;
+        final int deadline;
+        VictoryCelebration(RegistryKey<World> dimension,List<CelebrationRocket> rockets,int nextTick,int deadline) {
+            this.dimension=dimension;this.rockets=rockets;this.nextTick=nextTick;this.deadline=deadline;
+        }
+    }
+    private static final List<VictoryCelebration> CELEBRATIONS=new ArrayList<>();
     private InvasionSystem(){}
     public static void initialize() {
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            int now=server.getTicks();
+            for(var it=CELEBRATIONS.iterator();it.hasNext();) {
+                var celebration=it.next();
+                ServerWorld world=server.getWorld(celebration.dimension);
+                if(world==null || now>=celebration.deadline || celebration.nextRocket>=celebration.rockets.size()) {
+                    it.remove();
+                    continue;
+                }
+                if(now>=celebration.nextTick) {
+                    var rocket=celebration.rockets.get(celebration.nextRocket++);
+                    launchCelebrationRocket(world,rocket.stack(),rocket.x(),rocket.y(),rocket.z());
+                    celebration.nextTick+=10;
+                    if(celebration.nextRocket>=celebration.rockets.size())it.remove();
+                }
+            }
+        });
         ServerTickEvents.END_SERVER_TICK.register(server -> ACTIVE.entrySet().removeIf(e -> {
             var nest=e.getKey();var w=nest.getWorld();
             if(nest.isRemoved() || w==null || w.getServer()!=server || !w.isChunkLoaded(nest.getPos()) || !active(nest)) {
-                if(!nest.invasion.contains("Coordinator")) e.getValue().clearPlayers(); // Protect shared bar
+                if(!nest.invasion.contains("Coordinator")) {
+                    e.getValue().clearPlayers(); // Protect shared bar
+                    if(w instanceof ServerWorld sw && nest.invasion.containsUuid("Id")) stopRaidMusic(sw,nest.invasion.getUuid("Id"));
+                }
                 return true;
             }
             return false;
@@ -78,6 +126,39 @@ public final class InvasionSystem {
             }
         }
         return list;
+    }
+    /** Starts the normal celebration at the nearest loaded colony without resolving or rewarding a raid. */
+    public static boolean forceCelebration(ServerWorld world,BlockPos searchOrigin) {
+        GrandBeetleNestBlockEntity nearest=null;
+        double nearestDistance=128.0*128.0;
+        for(var nest:completeNestsNear(world,searchOrigin,128,128)) {
+            double distance=nest.getPos().getSquaredDistance(searchOrigin);
+            if(distance<=nearestDistance) {nearest=nest;nearestDistance=distance;}
+        }
+        if(nearest==null)return false;
+
+        var colony=completeNestsNear(world,nearest.getPos(),72,24);
+        if(colony.isEmpty())colony=List.of(nearest);
+        var beetles=world.getEntitiesByClass(DungBeetleEntity.class,clusterBox(colony),DungBeetleEntity::isAlive);
+        spawnVictoryCelebration(world,colony,beetles);
+        return true;
+    }
+    private static List<GrandBeetleNestBlockEntity> completeNestsNear(ServerWorld world,BlockPos center,int horizontalRange,int verticalRange) {
+        List<GrandBeetleNestBlockEntity> nests=new ArrayList<>();
+        int minChunkX=(center.getX()-horizontalRange)>>4,maxChunkX=(center.getX()+horizontalRange)>>4;
+        int minChunkZ=(center.getZ()-horizontalRange)>>4,maxChunkZ=(center.getZ()+horizontalRange)>>4;
+        for(int chunkX=minChunkX;chunkX<=maxChunkX;chunkX++)for(int chunkZ=minChunkZ;chunkZ<=maxChunkZ;chunkZ++) {
+            BlockPos chunkPos=new BlockPos(chunkX<<4,center.getY(),chunkZ<<4);
+            if(!world.isChunkLoaded(chunkPos))continue;
+            for(var blockEntity:world.getWorldChunk(chunkPos).getBlockEntities().values()) {
+                if(blockEntity instanceof GrandBeetleNestBlockEntity nest
+                    && Math.abs(nest.getPos().getX()-center.getX())<=horizontalRange
+                    && Math.abs(nest.getPos().getY()-center.getY())<=verticalRange
+                    && Math.abs(nest.getPos().getZ()-center.getZ())<=horizontalRange
+                    && nest.isStructureIntact())nests.add(nest);
+            }
+        }
+        return nests;
     }
     private static Box clusterBox(List<GrandBeetleNestBlockEntity> cluster) {
         Box b = new Box(cluster.get(0).getPos());
@@ -133,6 +214,8 @@ public final class InvasionSystem {
         }
         
         coordinator.markDirty();
+        // Begin the soundtrack as soon as the raid enters its muster phase.
+        syncRaidMusic(w,id,joinedNests);
         return true;
     }
     private static void prepareResident(World w,GrandBeetleNestBlockEntity n,NbtCompound resident,UUID eventId) {
@@ -165,11 +248,12 @@ public final class InvasionSystem {
         if(n.invasion.contains("Coordinator")) return true; // Minions don't advance the siege logic
         
         var clusterNests = cluster(w, n);
+        tickRaidMusic(w,n.invasion.getUuid("Id"),clusterNests);
         Box bounds = clusterBox(clusterNests);
         var bar=ACTIVE.computeIfAbsent(n,k->new ServerBossBar(Text.literal("Invasión fétida"),BossBar.Color.GREEN,BossBar.Style.PROGRESS));
         
         if(w.getTime()%20==0) {
-            for(var p:w.getPlayers()) {
+            for(var p:playersInWorld(w)) {
                 boolean near = clusterNests.stream().anyMatch(gn -> p.squaredDistanceTo(gn.getPos().toCenterPos()) < RADIUS*RADIUS*2);
                 if(near) bar.addPlayer(p); else bar.removePlayer(p);
             }
@@ -314,8 +398,16 @@ public final class InvasionSystem {
     public static void finish(ServerWorld w,GrandBeetleNestBlockEntity n,boolean won){if(!active(n))return;if(n.invasion.contains("Coordinator")){BlockPos p=BlockPos.fromLong(n.invasion.getLong("Coordinator"));if(w.isChunkLoaded(p)&&w.getBlockEntity(p) instanceof GrandBeetleNestBlockEntity c){n=c;}}finish(w,n,cluster(w,n),won);}
     private static void finish(ServerWorld w,GrandBeetleNestBlockEntity coordinator,List<GrandBeetleNestBlockEntity> clusterNests,boolean won) {
         if(!active(coordinator))return;
+        stopRaidMusic(w,coordinator.invasion.getUuid("Id"));
         var bar = ACTIVE.get(coordinator);
-        for(var e:fighters(w,coordinator.invasion.getUuid("Id"),clusterBox(clusterNests)))if(e instanceof FetidSlimeEntity)e.discard();else clearFighter(e);
+        List<DungBeetleEntity> celebratingBeetles=new ArrayList<>();
+        for(var e:fighters(w,coordinator.invasion.getUuid("Id"),clusterBox(clusterNests))) {
+            if(e instanceof FetidSlimeEntity)e.discard();
+            else {
+                if(e instanceof DungBeetleEntity beetle && beetle.isAlive())celebratingBeetles.add(beetle);
+                clearFighter(e);
+            }
+        }
         
         for(var gn : clusterNests) {
             for(var r:gn.getOccupants()) {var data=r.getCompound("Entity");var c=data.getCompound("Invasion");
@@ -330,7 +422,139 @@ public final class InvasionSystem {
             ACTIVE.remove(gn);
             gn.markDirty();
         }
+        if (won) {
+            spawnVictoryCelebration(w,clusterNests,celebratingBeetles);
+            spawnRewardTrader(w, coordinator);
+        }
         if(bar!=null){for(var p:bar.getPlayers())p.sendMessage(Text.literal(won?"¡La colonia unida ha defendido su territorio!":"La invasión fétida ha extinguido la resistencia."),false);bar.clearPlayers();}
+    }
+
+    /** A bounded, varied vanilla firework show celebrates a successful defense. */
+    private static void spawnVictoryCelebration(ServerWorld world,List<GrandBeetleNestBlockEntity> nests,List<DungBeetleEntity> beetles) {
+        for(var nest:nests) {
+            BlockPos pos=nest.getPos();
+            world.spawnParticles(ParticleTypes.HAPPY_VILLAGER,pos.getX()+.5,pos.getY()+2.0,pos.getZ()+.5,20,.8,.7,.8,.08);
+        }
+        for(var beetle:beetles)if(beetle.isAlive()) {
+            world.spawnParticles(ParticleTypes.HAPPY_VILLAGER,beetle.getX(),beetle.getY()+.6,beetle.getZ(),12,.45,.35,.45,.06);
+        }
+
+        List<CelebrationRocket> rockets=new ArrayList<>(24);
+        var shapes=FireworkExplosionComponent.Type.values();
+        int[][] palettes={
+            {0xF9FFFE,0xF9801D,0xFED83D}, {0x3AB3DA,0x8932B8,0xF9FFFE},
+            {0xB02E26,0x80C71F,0xF9801D}, {0x3C44AA,0xC74EBD,0x3AB3DA},
+            {0xFED83D,0xB02E26,0x8932B8}, {0x80C71F,0xF9FFFE,0x3C44AA}
+        };
+        for(int i=0;i<24;i++) {
+            var nest=nests.get(i%nests.size());
+            BlockPos origin=nest.getOrigin();
+            int side=i%4;
+            double x=nest.getPos().getX()+.5+(side==1?2.5:side==3?-2.5:0);
+            double y=origin.getY()+18.0+(i%3==0?1.5:0);
+            double z=nest.getPos().getZ()+.5+(side==0?2.5:side==2?-2.5:0);
+            ItemStack rocketStack=new ItemStack(Items.FIREWORK_ROCKET);
+            int[] colors=palettes[i%palettes.length];
+            var explosion=new FireworkExplosionComponent(shapes[i%shapes.length],IntList.of(colors[0],colors[1]),IntList.of(colors[2]),true,i%3==0);
+            rocketStack.set(DataComponentTypes.FIREWORKS,new FireworksComponent(1,List.of(explosion)));
+            rockets.add(new CelebrationRocket(rocketStack,x,y,z));
+        }
+        // Launch one now, then one every 10 ticks. The transient show completes in 11.5 seconds.
+        var first=rockets.get(0);
+        launchCelebrationRocket(world,first.stack(),first.x(),first.y(),first.z());
+        int now=world.getServer().getTicks();
+        CELEBRATIONS.add(new VictoryCelebration(world.getRegistryKey(),rockets,now+10,now+300));
+    }
+
+    private static void launchCelebrationRocket(ServerWorld world,ItemStack stack,double x,double y,double z) {
+        BlockPos pos=BlockPos.ofFloored(x,y,z);
+        if(!world.isChunkLoaded(pos))return;
+        var rocket=new FireworkRocketEntity(world,stack,x,y,z,false);
+        if(world.spawnEntity(rocket))world.spawnParticles(ParticleTypes.FIREWORK,x,y,z,8,.2,.2,.2,.02);
+    }
+
+    /** Keeps the soundtrack audience aligned with the raid boss-bar audience. */
+    private static void tickRaidMusic(ServerWorld world,UUID eventId,List<GrandBeetleNestBlockEntity> nests) {
+        if(world.getTime()%20==0) syncRaidMusic(world,eventId,nests);
+        Map<UUID,Long> listeners=RAID_MUSIC_LISTENERS.computeIfAbsent(eventId,ignored->new HashMap<>());
+        long now=world.getTime();
+        for(ServerPlayerEntity player:playersInWorld(world)) {
+            Long next=listeners.get(player.getUuid());
+            if(next!=null && now>=next) {
+                stopRaidMusicForPlayer(player);
+                playRaidMusicForPlayer(player);
+                listeners.put(player.getUuid(),now+RAID_MUSIC_DURATION_TICKS);
+            }
+        }
+    }
+
+    private static void syncRaidMusic(ServerWorld world,UUID eventId,List<GrandBeetleNestBlockEntity> nests) {
+        Map<UUID,Long> listeners=RAID_MUSIC_LISTENERS.computeIfAbsent(eventId,ignored->new HashMap<>());
+        long now=world.getTime();
+        for(ServerPlayerEntity player:playersInWorld(world)) {
+            boolean witnessing=isRaidMusicWitnessPosition(player.getPos(),nests);
+            boolean listening=listeners.containsKey(player.getUuid());
+            if(witnessing && !listening) {
+                playRaidMusicForPlayer(player);
+                listeners.put(player.getUuid(),now+RAID_MUSIC_DURATION_TICKS);
+            } else if(!witnessing && listening) {
+                stopRaidMusicForPlayer(player);
+                listeners.remove(player.getUuid());
+            }
+        }
+        // A disconnected client should restart the track if it later rejoins the audience.
+        listeners.keySet().removeIf(uuid->world.getServer().getPlayerManager().getPlayer(uuid)==null);
+    }
+
+    public static boolean isRaidMusicWitnessPosition(Vec3d position,List<GrandBeetleNestBlockEntity> nests) {
+        return nests.stream().anyMatch(nest->position.squaredDistanceTo(nest.getPos().toCenterPos())<RADIUS*RADIUS*2);
+    }
+
+    private static List<ServerPlayerEntity> playersInWorld(ServerWorld world) {
+        return world.getServer().getPlayerManager().getPlayerList().stream().filter(player->player.getServerWorld()==world).toList();
+    }
+
+    private static void playRaidMusicForPlayer(ServerPlayerEntity player) {
+        // Direct-to-player playback avoids positional attenuation across the raid arena.
+        player.networkHandler.sendPacket(new StopSoundS2CPacket(null,SoundCategory.MUSIC));
+        player.playSoundToPlayer(ModSounds.RAID_FINAL_THEME,SoundCategory.MUSIC,1.0F,1.0F);
+    }
+
+    private static void stopRaidMusicForPlayer(ServerPlayerEntity player) {
+        player.networkHandler.sendPacket(new StopSoundS2CPacket(RAID_MUSIC_ID,SoundCategory.MUSIC));
+    }
+
+    private static void stopRaidMusic(ServerWorld world,UUID eventId) {
+        Map<UUID,Long> listeners=RAID_MUSIC_LISTENERS.remove(eventId);
+        if(listeners==null)return;
+        for(UUID uuid:listeners.keySet()) {
+            ServerPlayerEntity player=world.getServer().getPlayerManager().getPlayer(uuid);
+            if(player!=null)stopRaidMusicForPlayer(player);
+        }
+    }
+
+    private static void spawnRewardTrader(ServerWorld world, GrandBeetleNestBlockEntity nest) {
+        var trader = ModEntities.DUNG_BEETLE.create(world);
+        if (trader == null) return;
+        trader.setTrader(true);
+        trader.setDiscountedTrader(true);
+        trader.setNest(nest.getPos());
+        BlockPos origin = nest.getOrigin();
+        for (int y = 5; y <= 9; y++) {
+            for (int x = -2; x <= 6; x++) {
+                for (int z = -2; z <= 6; z++) {
+                    BlockPos spawn = origin.add(x, y, z);
+                    if (!world.isChunkLoaded(spawn)) continue;
+                    trader.refreshPositionAndAngles(spawn.getX() + .5, spawn.getY(), spawn.getZ() + .5, 0, 0);
+                    if (world.getFluidState(spawn).isEmpty() && world.isSpaceEmpty(trader)
+                            && world.getOtherEntities(trader, trader.getBoundingBox()).isEmpty()
+                            && world.spawnEntity(trader)) return;
+                }
+            }
+        }
+        BlockPos fallback = origin.add(2, 10, 2);
+        trader.refreshPositionAndAngles(fallback.getX() + .5, fallback.getY(), fallback.getZ() + .5, 0, 0);
+        world.spawnEntity(trader);
     }
     public static void clearFighter(MobEntity mob) {
         if(!(mob instanceof InvasionParticipant p))return;

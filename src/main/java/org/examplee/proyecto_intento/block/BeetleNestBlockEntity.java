@@ -2,6 +2,7 @@ package org.examplee.proyecto_intento.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -22,9 +23,30 @@ public final class BeetleNestBlockEntity extends BlockEntity {
     public static final int MAX_FOOD = 8;
     private final List<NbtCompound> occupants = new ArrayList<>();
     private int food;
+    /** Runtime-only claim prevents multiple collectors from dismantling the same house at once. */
+    private UUID grandNestCollector;
     public BeetleNestBlockEntity(BlockPos pos, BlockState state) { super(ModBlocks.BEETLE_NEST_ENTITY, pos, state); }
     public int getOccupantCount() { return occupants.size(); }
     public int getFood() { return food; }
+    public boolean tryClaimForGrandNest(UUID collectorId) {
+        if (world == null || world.isClient || collectorId == null) return false;
+        if (isClaimedForGrandNest() && !collectorId.equals(grandNestCollector)) return false;
+        grandNestCollector = collectorId;
+        return true;
+    }
+    public boolean isClaimedByGrandNestCollector(UUID collectorId) {
+        return collectorId != null && collectorId.equals(grandNestCollector) && isClaimedForGrandNest();
+    }
+    public boolean isClaimedForGrandNest() {
+        if (grandNestCollector == null) return false;
+        if (world instanceof ServerWorld server
+                && server.getEntity(grandNestCollector) instanceof DungBeetleEntity collector && collector.isAlive()) return true;
+        grandNestCollector = null;
+        return false;
+    }
+    public void releaseGrandNestClaim(UUID collectorId) {
+        if (collectorId != null && collectorId.equals(grandNestCollector)) grandNestCollector = null;
+    }
     /** Recover one stored item, then one construction layer; never manufacture an extra drop. */
     public boolean takeMaterialForGrandNest() {
         if(world==null || world.isClient || !world.getGameRules().getBoolean(net.minecraft.world.GameRules.DO_MOB_GRIEFING)) return false;
@@ -124,7 +146,8 @@ public final class BeetleNestBlockEntity extends BlockEntity {
         if (beetle == null) return false;
         beetle.readNbt(data.copy());
         beetle.onNestExit(pos, emergency);
-        for (Direction direction : new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.UP}) {
+        // Use the roof as the primary exit so a crowd around the house door cannot trap residents.
+        for (Direction direction : new Direction[]{Direction.UP, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST}) {
             BlockPos exit = pos.offset(direction);
             if (!server.isChunkLoaded(exit)) continue;
             beetle.refreshPositionAndAngles(exit.getX() + .5, exit.getY() + .05, exit.getZ() + .5, direction == Direction.UP ? 0 : direction.asRotation(), 0);

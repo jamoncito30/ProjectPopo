@@ -40,6 +40,8 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
     private int amountInvested = 0;
     private boolean soundPlayed = false;
     private BlockPos origin;
+    private BlockPos expansionTarget;
+    private long nextExpansionAttempt;
 
     // Cache the blueprint presence to avoid reading files over and over
     private static boolean[][] BLUEPRINT_PIECES = null;
@@ -62,8 +64,19 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
     public boolean isComplete() { return getCachedState().get(GrandBeetleNestPieceBlock.STAGE) == 4; }
     
     public int getFoodCount() { return items.stream().mapToInt(ItemStack::getCount).sum(); }
+    /** Removes one stored unit for a colony builder; the caller carries and deposits it transactionally. */
+    public boolean takeOnePopo() {
+        for (ItemStack stack : items) {
+            if (stack.isEmpty()) continue;
+            stack.decrement(1);
+            markDirty();
+            return true;
+        }
+        return false;
+    }
     public int getOccupantCount() { return occupants.size(); }
     public int getAmountInvested() { return amountInvested; }
+    public BlockPos getExpansionTarget() { return expansionTarget; }
     /** Flat clear footprint, with ten full blocks between the nearest edges of colonies. */
     public static boolean isValidSite(ServerWorld world,BlockPos origin) {
         for(int x=0;x<5;x++) for(int z=0;z<5;z++) {
@@ -88,6 +101,7 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
     public void playSoundOnce(World world, BlockPos pos) {
         if (!soundPlayed && world != null && !world.isClient) {
             if (world instanceof net.minecraft.server.world.ServerWorld sw) {
+                boolean played = false;
                 for (net.minecraft.server.network.ServerPlayerEntity player : sw.getPlayers()) {
                     if (player.squaredDistanceTo(pos.toCenterPos()) < 4096) { // 64 blocks
                         // Stop vanilla ambient music
@@ -96,12 +110,15 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
                         // Play soundtrack directly to the player at their own location so it acts as standard Soundtrack without positional dropping
                         // We use the player's own position for the sound spawn so they hear it directly in their head
                         player.playSoundToPlayer(org.examplee.proyecto_intento.entity.ModSounds.GRAND_NEST_START, net.minecraft.sound.SoundCategory.RECORDS, 1.0F, 1.0F);
+                        played = true;
                     }
                 }
+                if (played) {
+                    soundPlayed = true;
+                    markDirty();
+                    world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_ALL);
+                }
             }
-            soundPlayed = true;
-            markDirty();
-            world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_ALL);
         }
     }
     public BlockPos getOrigin() { return origin != null ? origin : pos.add(-2, 0, -2); }
@@ -319,12 +336,16 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
         }
 
         if (world.getTime() % 20 == 0) {
+            if (complete && world.getGameRules().getBoolean(net.minecraft.world.GameRules.DO_MOB_GRIEFING)
+                    && world.getTime() >= nest.nextExpansionAttempt) {
+                nest.tryStartGrandNestExpansion(server);
+            }
             if (complete) {
                 List<NbtCompound> parents = nest.occupants.stream().filter(n -> n.getInt("TicksInside") >= 200
                         && n.getCompound("Entity").getInt("Age") == 0
                         && !n.getCompound("Entity").getBoolean("NurseryResident")).limit(2).toList();
                 
-                if (nest.getFoodCount() > 0 && parents.size() == 2 && nest.occupants.size() < POPULATION_CAPACITY && nest.localPopulation() < 30) {
+                if (nest.getFoodCount() > 0 && parents.size() == 2 && nest.occupants.size() < POPULATION_CAPACITY && nest.localPopulation(server) < 30) {
                     if (nest.consumeFood(1)) {
                         DungBeetleEntity baby = ModEntities.DUNG_BEETLE.create(server);
                         if (baby != null) {
@@ -359,34 +380,161 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
         if (!nest.occupants.isEmpty()) nest.markDirty();
     }
     
-    private void tryFoundSmallNest(ServerWorld server) {
-        // Look for empty space for a single nest
-        if (consumeFood(6)) {
-            for (int x = -10; x <= 10; x++) {
-                for (int z = -10; z <= 10; z++) {
-                    if (Math.abs(x) < 3 && Math.abs(z) < 3) continue; // Don't build too close to center
-                    for (int y = -2; y <= 2; y++) {
-                        BlockPos c = pos.add(x, y, z);
-                        if (validateSmallNestSpace(server, c)) {
-                            server.setBlockState(c, ModBlocks.BEETLE_NEST.getDefaultState().with(BeetleNestBlock.STAGE, 5));
-                            if(server.getBlockEntity(c) instanceof BeetleNestBlockEntity small) small.addMaterial(); // sixth unit is food
-                            // Also place a beetle to inhabit it
-                            if (occupants.size() > 0) {
-                                NbtCompound resident = occupants.get(occupants.size() - 1);
-                                if(release(server, resident, true, c)) occupants.remove(resident);
-                            }
-                            return;
-                        }
+    public boolean tryFoundSmallNest(ServerWorld server) {
+        if (world != server || !isComplete() || !server.getGameRules().getBoolean(net.minecraft.world.GameRules.DO_MOB_GRIEFING)
+                || occupants.size() < POPULATION_CAPACITY || getFoodCount() < 6 || !hasReleasableOccupant(server)) return false;
+
+        // Reassign an unoccupied nearby house before creating another one. This prevents
+        // collectors from dismantling an empty house while a full colony immediately
+        // creates a replacement on its next 100-tick check.
+        BlockPos vacantHouse = findVacantSmallNest(server);
+        if (vacantHouse != null) {
+            return releaseOccupantInto(server, vacantHouse);
+        }
+
+        for (int x = -10; x <= 10; x++) {
+            for (int z = -10; z <= 10; z++) {
+                if (Math.abs(x) < 3 && Math.abs(z) < 3) continue; // Don't build too close to center
+                for (int y = -2; y <= 2; y++) {
+                    BlockPos c = pos.add(x, y, z);
+                    if (!validateSmallNestSpace(server, c)) continue;
+                    if (!server.setBlockState(c, ModBlocks.BEETLE_NEST.getDefaultState().with(BeetleNestBlock.STAGE, 5))) continue;
+
+                    if (!(server.getBlockEntity(c) instanceof BeetleNestBlockEntity small) || !small.addMaterial()) {
+                        server.setBlockState(c, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
+                        continue;
                     }
+
+                    // Only commit the cost after an actual resident has been spawned and
+                    // assigned. A failed release must not leave a new empty house behind.
+                    if (!releaseOccupantInto(server, c)) {
+                        server.setBlockState(c, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
+                        continue;
+                    }
+                    consumeFood(6); // Food was checked before placement and no other tick can consume it here.
+                    return true;
                 }
             }
-            // If failed to find space, revert food
-            deposit(new ItemStack(ModItems.POPO, 6));
         }
+        // No food is consumed if no resident could be housed.
+        return false;
+    }
+
+    private boolean hasReleasableOccupant(ServerWorld server) {
+        for (NbtCompound resident : occupants) {
+            NbtCompound data = resident.getCompound("Entity");
+            if (!data.containsUuid("UUID") || server.getEntity(data.getUuid("UUID")) == null) return true;
+        }
+        return false;
+    }
+
+    private BlockPos findVacantSmallNest(ServerWorld server) {
+        for (int x = -10; x <= 10; x++) {
+            for (int z = -10; z <= 10; z++) {
+                for (int y = -2; y <= 2; y++) {
+                    BlockPos candidate = pos.add(x, y, z);
+                    if (!server.isChunkLoaded(candidate)
+                            || !(server.getBlockEntity(candidate) instanceof BeetleNestBlockEntity small)
+                            || !small.isComplete() || small.getOccupantCount() != 0
+                            || small.isClaimedForGrandNest()
+                            || hasAssignedBeetle(server, candidate)) continue;
+                    return candidate.toImmutable();
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean hasAssignedBeetle(ServerWorld server, BlockPos house) {
+        Box bounds = new Box(house).expand(48, 8, 48);
+        return !server.getEntitiesByClass(DungBeetleEntity.class, bounds,
+                beetle -> beetle.isAlive() && house.equals(beetle.getNestPos())).isEmpty();
+    }
+
+    private boolean releaseOccupantInto(ServerWorld server, BlockPos house) {
+        for (int i = occupants.size() - 1; i >= 0; i--) {
+            NbtCompound resident = occupants.get(i);
+            if (!release(server, resident, true, house)) continue;
+            occupants.remove(i);
+            markDirty();
+            return true;
+        }
+        return false;
+    }
+
+    /** Starts an unbounded, repeatable colony expansion when this nest has twenty linked beetles. */
+    public boolean tryStartGrandNestExpansion(ServerWorld server) {
+        if (world != server || !isComplete() || !server.getGameRules().getBoolean(net.minecraft.world.GameRules.DO_MOB_GRIEFING)) return false;
+        if (expansionTarget != null) {
+            if (!server.isChunkLoaded(expansionTarget)) return false;
+            if (server.getBlockEntity(expansionTarget) instanceof GrandBeetleNestBlockEntity pending && !pending.isComplete()) return false;
+            expansionTarget = null;
+        }
+        if (server.getTime() < nextExpansionAttempt) return false;
+        List<DungBeetleEntity> linkedExterior = server.getEntitiesByClass(DungBeetleEntity.class,
+                new Box(pos).expand(64, 12, 64), beetle -> beetle.isAlive()
+                        && pos.equals(beetle.getNestPos()) && beetle.combat().event == null);
+        int linkedPopulation = occupants.size() + linkedExterior.size();
+        if (linkedPopulation < 20) return false;
+        nextExpansionAttempt = server.getTime() + 6000;
+        markDirty();
+        List<DungBeetleEntity> exterior = linkedExterior.stream().filter(beetle -> !beetle.isBaby()).toList();
+
+        List<Object> candidates = new ArrayList<>();
+        candidates.addAll(exterior);
+        for (NbtCompound resident : occupants) {
+            NbtCompound entity = resident.getCompound("Entity");
+            if (entity.getInt("Age") >= 0 && !entity.getBoolean("NurseryResident")
+                    && !entity.getBoolean("IsTrader") && !entity.getCompound("Invasion").containsUuid("Event")) {
+                candidates.add(resident);
+            }
+        }
+        if (candidates.size() < 4) return false;
+        java.util.Collections.shuffle(candidates, new java.util.Random(server.random.nextLong()));
+
+        BlockPos newOrigin = findGrandNestSite(server);
+        if (newOrigin == null) return false;
+        BlockPos controller = newOrigin.add(2, 0, 2);
+        if (!server.setBlockState(controller, ModBlocks.GRAND_BEETLE_NEST_CONTROLLER.getDefaultState()
+                .with(GrandBeetleNestPieceBlock.STAGE, 1), Block.NOTIFY_ALL)) return false;
+        if (!(server.getBlockEntity(controller) instanceof GrandBeetleNestBlockEntity destination)) {
+            server.setBlockState(controller, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
+            return false;
+        }
+        destination.setOrigin(newOrigin);
+        destination.updateStructure(1);
+        expansionTarget = controller.toImmutable();
+
+        for (Object candidate : candidates.subList(0, 4)) {
+            if (candidate instanceof DungBeetleEntity beetle) {
+                beetle.assignGrandNestConstruction(controller, pos);
+            } else if (candidate instanceof NbtCompound resident) {
+                NbtCompound data = resident.getCompound("Entity");
+                data.putLong("GrandNestBuildTarget", controller.asLong());
+                data.putLong("GrandNestBuildSource", pos.asLong());
+                if (release(server, resident, false)) occupants.remove(resident);
+            }
+        }
+        markDirty();
+        return true;
+    }
+
+    private BlockPos findGrandNestSite(ServerWorld server) {
+        for (int trial = 0; trial < 160; trial++) {
+            int x = server.random.nextBetween(-64, 64);
+            int z = server.random.nextBetween(-64, 64);
+            if (x * x + z * z < 15 * 15) continue;
+            int y = server.random.nextBetween(-2, 2);
+            BlockPos candidate = getOrigin().add(x, y, z);
+            if (isValidSite(server, candidate)) return candidate;
+        }
+        return null;
     }
     
     private boolean validateSmallNestSpace(ServerWorld world, BlockPos c) {
-        return world.getBlockState(c).isAir() && world.getBlockState(c.down()).isOpaqueFullCube(world, c.down());
+        return world.isChunkLoaded(c) && world.isChunkLoaded(c.up()) && world.isChunkLoaded(c.down())
+                && world.getBlockState(c).isAir() && world.getBlockState(c.up()).isAir()
+                && world.getBlockState(c.down()).isOpaqueFullCube(world, c.down());
     }
 
     private boolean consumeFood(int amount) {
@@ -408,9 +556,27 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
         return false;
     }
 
-    private int localPopulation() {
-        int count = world.getEntitiesByClass(DungBeetleEntity.class, new Box(pos).expand(16), e -> e.isAlive()).size();
-        return count + occupants.size();
+    private int localPopulation(ServerWorld server) {
+        int count = server.getEntitiesByClass(DungBeetleEntity.class, new Box(pos).expand(16), e -> e.isAlive()).size();
+        Box bounds = new Box(pos).expand(16);
+        int minChunkX = (pos.getX() - 16) >> 4;
+        int maxChunkX = (pos.getX() + 16) >> 4;
+        int minChunkZ = (pos.getZ() - 16) >> 4;
+        int maxChunkZ = (pos.getZ() + 16) >> 4;
+        for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
+            for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
+                BlockPos chunkPos = new BlockPos(chunkX << 4, pos.getY(), chunkZ << 4);
+                if (!server.isChunkLoaded(chunkPos)) continue;
+                for (BlockEntity blockEntity : server.getWorldChunk(chunkPos).getBlockEntities().values()) {
+                    if (blockEntity instanceof GrandBeetleNestBlockEntity nest && bounds.contains(nest.pos.toCenterPos())) {
+                        count += nest.getOccupantCount();
+                    } else if (blockEntity instanceof BeetleNestBlockEntity nest && bounds.contains(nest.getPos().toCenterPos())) {
+                        count += nest.getOccupantCount();
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     public boolean release(ServerWorld server, NbtCompound resident, boolean emergency) {
@@ -435,13 +601,17 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
             beetle.refreshPositionAndAngles(exit.getX()+.5,exit.getY()+.05,exit.getZ()+.5,180,0);
             if(server.isSpaceEmpty(beetle) && !server.getBlockState(exit.down()).getCollisionShape(server,exit.down()).isEmpty()
                     && server.getOtherEntities(beetle,beetle.getBoundingBox()).isEmpty() && server.spawnEntity(beetle)) {
+                if (!emergency && exitTarget.equals(pos)) beetle.restockAtGrandNest();
                 if(beetle.combatRole()>0)server.spawnParticles(ParticleTypes.HAPPY_VILLAGER,beetle.getX(),beetle.getY()+.5,beetle.getZ(),8,.3,.2,.3,.02);
                 markDirty();return true;
             }
         }
         if (emergency) {
             beetle.refreshPositionAndAngles(exitTarget.getX() + .5, exitTarget.getY() + .05, exitTarget.getZ() + .5, 0, 0);
-            return server.spawnEntity(beetle);
+            if (server.spawnEntity(beetle)) {
+                if (!emergency && exitTarget.equals(pos)) beetle.restockAtGrandNest();
+                return true;
+            }
         }
         return false;
     }
@@ -493,6 +663,8 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
             nbt.putInt("OriginY", origin.getY());
             nbt.putInt("OriginZ", origin.getZ());
         }
+        if (expansionTarget != null) nbt.putLong("ExpansionTarget", expansionTarget.asLong());
+        nbt.putLong("NextExpansionAttempt", nextExpansionAttempt);
         NbtList list = new NbtList();
         occupants.forEach(n -> list.add(n.copy()));
         nbt.put("Occupants", list);
@@ -510,6 +682,8 @@ public final class GrandBeetleNestBlockEntity extends BlockEntity implements Sid
         }
         amountInvested = Math.clamp(nbt.getInt("AmountInvested"),0,64);
         origin=null;
+        expansionTarget=nbt.contains("ExpansionTarget") ? BlockPos.fromLong(nbt.getLong("ExpansionTarget")) : null;
+        nextExpansionAttempt=Math.max(0,nbt.getLong("NextExpansionAttempt"));
         soundPlayed = nbt.getBoolean("SoundPlayed");
         if (nbt.contains("OriginX")) {
             origin = new BlockPos(nbt.getInt("OriginX"), nbt.getInt("OriginY"), nbt.getInt("OriginZ"));
